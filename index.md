@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Computational Phonology and Morphology
+title: Montreal Grammars and Parsing Project
 ---
 
 <div class="main">
-  <h1>Computational Phonology and Morphology</h1>
-  <span class="authors">Timothy J. O'Donnell and Adam Albright</span>
+  <h1>Montreal Grammars and Parsing Project</h1>
+  <span class="authors">Timothy J. O'Donnell, Christopher Bruno, Daniel Harasim, Emily Kellison-Linn and Eva Portelance</span>
 </div>
 
 ### Chapters
