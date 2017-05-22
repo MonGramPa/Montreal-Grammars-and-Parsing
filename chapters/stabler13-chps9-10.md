@@ -1,6 +1,6 @@
 ---
 layout: chapter
-title: Notes on Stabler (2019:chps.9-10)
+title: Notes on Stabler (2013:chps.9-10)
 description: MGs, MCFGs, derivations, and derivation trees
 ---
 
