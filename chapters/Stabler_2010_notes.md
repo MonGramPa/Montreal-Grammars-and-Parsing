@@ -64,7 +64,7 @@ Or using < and > as pointers towards each maximal projections head:
     <img src='images/Stabler_2010/em1.png' height='150'>
 
   * em defined as:
-    <img src='images/Stabler_2010/em2.png' height='150'>
+    <img src='images/Stabler_2010/em2.png' height='100'>
 
   * where the top is merging a complement and the bottom a specifier.
   * this definition allows for 1 complement and multiple specifiers.
@@ -72,26 +72,26 @@ Or using < and > as pointers towards each maximal projections head:
 * **internal merge (im) = move**
   * applies to 1 tree
   * uses licensee features, eg.
-    <img src='images/Stabler_2010/im1.png' height='200'>
+    <img src='images/Stabler_2010/im1.png' height='150'>
 
   * im must satisfy the Shortest Move Constraint (SMC) to apply to *t*[+x]
     * **SMC** : Exactly one head in the tree has -x as its first feature.
   * im defined as:
-    <img src='images/Stabler_2010/im2.png' height='150'>
+    <img src='images/Stabler_2010/im2.png' height='80'>
 
 * Example derivation:
   * Lexicon
-    <img src='images/Stabler_2010/deriv1.png' height='150'>
+    <img src='images/Stabler_2010/deriv1.png' height='100'>
 
   * Apply merge (em, im)
-    <img src='images/Stabler_2010/deriv2.png' height='250'>
+    <img src='images/Stabler_2010/deriv2.png' height='150'>
 
   * The derivation tree
-    <img src='images/Stabler_2010/deriv3.png' height='450'>
+    <img src='images/Stabler_2010/deriv3.png' height='250'>
 
 ### MGs and other formalisms
 
-  <img src='images/Stabler_2010/equiv1.png' height='450'>
+  <img src='images/Stabler_2010/equiv1.png' height='250'>
 
 * MG definable languages include:
   * finite (Fin)
@@ -103,7 +103,7 @@ Or using < and > as pointers towards each maximal projections head:
   * recursively enumerable (RE)
 
 Theorem 1.
-<img src='images/Stabler_2010/thm1.png' height='100'>
+<img src='images/Stabler_2010/thm1.png' height='40'>
 
 - TAG: tree adjoining grammars
 - CCG: categorial combinatory grammars
@@ -123,14 +123,14 @@ Theorem 1.
     * proposed solutions: unordered features or ordered features, but merge can optionally erase persistent features.
 
 * change the definition of Merge
-  <img src='images/Stabler_2010/CMG1.png'>
+  <img src='images/Stabler_2010/CMG1.png'height='150'>
 
 * example derivation:
   * lexicon
-  <img src='images/Stabler_2010/CMGderiv1.png' height='150'>
+  <img src='images/Stabler_2010/CMGderiv1.png' height='80'>
 
   * derivation tree and final tree
-  <img src='images/Stabler_2010/CMGderiv2.png' height='550'>
+  <img src='images/Stabler_2010/CMGderiv2.png' height='250'>
 
   * X' tree for comparison
   <img src='images/Stabler_2010/CMGderiv3.png' height='550'>
@@ -196,7 +196,7 @@ $$ RMG \equiv MG $$
 
 * The current definitions of merge only account for 'SVO'
 * Change the definition of em to account for different orders. =x feature attaches to the left, x=, to the right:
-  <img src='images/Stabler_2010/dir1.png'>  
+  <img src='images/Stabler_2010/dir1.png' height='100'>  
 
 Theorem 5.
 $$ DMG \equiv MG $$
@@ -208,7 +208,7 @@ $$ DMG \equiv MG $$
   * He classifies each order according to how often in is attested (0 = unattested, 1= very few, 2 = few, 3 = many, 4 = very many)
   * Stabler classifies them for MG and DMG models (4 - *l*), where *l* is the number of licensees needed to derive the order.
 
-    <img src='images/Stabler_2010/order1.png' height='450'>
+    <img src='images/Stabler_2010/order1.png' height='250'>
 
     * Pearson correlation coefficient:
       - Cinque and MG: 0.62
@@ -236,9 +236,9 @@ $$ DMG \equiv MG $$
 * Copy and delete
   * Merge:
     1. em stays unchanged
-    2. <img src='images/Stabler_2010/copydel1.png' height='250'>
+    2. <img src='images/Stabler_2010/copydel1.png' height='80'>
 
   * The generative power of MGs with copying (MGCs) depends on the nature of function g - If g maps everything to the empty tree, then equivalent to MGs. If g maps to an identical tree except the phonetic and semantic features stay in-situ, then the MGC are not to MGs.
 
   Theorem 6.
-  <img src='images/Stabler_2010/MGCequiv.png' height='100'>
+  <img src='images/Stabler_2010/MGCequiv.png' height='20'>
