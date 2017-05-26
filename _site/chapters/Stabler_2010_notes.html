@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Notes on Stabler (2010)</title>
+
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/theme/neat.css">
+    <link rel="stylesheet" href="/assets/css/katex.min.css">
+    <link rel="stylesheet" href="/assets/css/custom.css">
+    <link rel="stylesheet" href="/assets/css/code.css">
+
+    <script src="/assets/js/webchurch.min.js"></script>
+    <script src="/assets/js/katex.min.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/node_modules/codemirror/lib/codemirror.js"></script>
+    <script src="/node_modules/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/assets/js/cm-folding.js"></script>
+    <script src="/assets/js/cm-comments.js"></script>
+    <script src="/assets/js/webppl.min.js"></script>
+    <script src="/bower_components/jquery-autosize/jquery.autosize.min.js"></script>
+    <script src="/bower_components/d3/d3.min.js"></script>
+    <script src="/bower_components/vega/vega.min.js"></script>
+    <!-- <script src="https://probmods.org/webchurch/online/vega.min.js"></script> -->
+    <script src="/bower_components/underscore/underscore.js"></script>
+    <script src="/bower_components/react/JSXTransformer.js"></script>
+    <script src="/bower_components/react/react-with-addons.min.js"></script>
+    <script src="/bower_components/showdown/compressed/showdown.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <script type="text/jsx" src="/assets/js/editor.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Montreal Grammars and Parsing Project</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right collapse navbar-collapse">
+            <li><a href="/editor.html">Editor</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="container">
+
+      <div class="page-header">
+  <h1>Notes on Stabler (2010)</h1>
+</div>
+
+<h1 id="computational-perspectives-on-minimalism">Computational perspectives on minimalism</h1>
+
+<h4 id="stabler-e-2010-computational-perspectives-on-minimalism-in-oxford-handbook-of-linguistic-minimalism-c-boeckx-ed-oxford-press-pp-616-641">Stabler, E. (2010). Computational perspectives on minimalism. In <em>Oxford Handbook of Linguistic Minimalism</em>, C. Boeckx ed. Oxford Press, pp. 616-641.</h4>
+
+<h4 id="notes-by-eva-portelance-may-25-2017">Notes by Eva Portelance, May 25, 2017</h4>
+
+<h1 id="minimalist-grammar-variants">Minimalist Grammar Variants</h1>
+
+<h2 id="minimalist-grammars-mgs">Minimalist Grammars (MGs)</h2>
+
+<h3 id="review">Review</h3>
+
+<p>MG is composed of:</p>
+<ul>
+  <li>Lexicon (finite set of lexical items)</li>
+  <li>Merge structure building operations (Stabler: em and im)</li>
+  <li>Set of features</li>
+</ul>
+
+<p>Features</p>
+<ul>
+  <li>3 types: syntactic, semantic, phonetic</li>
+  <li>4 types of syntactic features:
+    <ul>
+      <li>categoral: syntactic category of head (e.g. d)</li>
+      <li>selector: for merge (another category the head attracts, e.g =d)</li>
+      <li>licensor: for move (landing projection, eg. +case, +wh)</li>
+      <li>licensee: for move (moving projection, eg. -case, -wh)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Lexicon</p>
+<ul>
+  <li>lexical item: a sequence of features. eg. =n, d, -case, /ɛvɹi/, EVERY}</li>
+  <li>usual notation: (non-syntactic)    Phon :: f1, f2, … , fn     (syntactic features)</li>
+  <li>phonological feat can be 𝜖 (functional heads)</li>
+</ul>
+
+<h3 id="bare-phrase-structure">Bare phrase structure</h3>
+
+<p>“…the important insight of X-bar syntax is a relational one: a head X determines certain relevant properties of the XP it is the head of. “</p>
+
+<p>Merge according to Chomsky (1995:245):
+   <script type="math/tex">merge(\alpha , \beta  ) -> \{ \alpha ,\{ \alpha,\beta \}\}</script>
+Represented by the following unordered tree:
+  <img src="images/Stabler_2010/barestruct1.png" height="150" /></p>
+
+<p>Or using &lt; and &gt; as pointers towards each maximal projections head:
+  <img src="images/Stabler_2010/barestruct2.png" height="150" /></p>
+
+<ul>
+  <li>leaves: lexical items reduced to only their syntactic features (no distinction between overt and covert movement)</li>
+  <li>linear order determined locally</li>
+  <li>
+    <p>Eg. the linear order is 123456789 and the head of the tree is 8.
+<img src="images/Stabler_2010/barestruct3.png" height="220" /></p>
+  </li>
+  <li>maximal projection: subtree which is not part of any larger subtree with the same head. eg. 234</li>
+</ul>
+
+<h3 id="merge-first-version">Merge: First version</h3>
+
+<ul>
+  <li>
+    <p>The lexicon provides labels for 1-node trees (i.e. we always merge trees)</p>
+  </li>
+  <li><strong>external merge (em) = merge</strong>
+    <ul>
+      <li>2 trees merge</li>
+      <li>
+        <p>uses selector features, eg.
+<img src="images/Stabler_2010/em1.png" height="150" /></p>
+      </li>
+      <li>
+        <p>em defined as:
+<img src="images/Stabler_2010/em2.png" height="100" /></p>
+      </li>
+      <li>where the top is merging a complement and the bottom a specifier.</li>
+      <li>this definition allows for 1 complement and multiple specifiers.</li>
+    </ul>
+  </li>
+  <li><strong>internal merge (im) = move</strong>
+    <ul>
+      <li>applies to 1 tree</li>
+      <li>
+        <p>uses licensee features, eg.
+<img src="images/Stabler_2010/im1.png" height="150" /></p>
+      </li>
+      <li>im must satisfy the Shortest Move Constraint (SMC) to apply to <em>t</em>[+x]
+        <ul>
+          <li><strong>SMC</strong> : Exactly one head in the tree has -x as its first feature.</li>
+        </ul>
+      </li>
+      <li>im defined as:
+<img src="images/Stabler_2010/im2.png" height="80" /></li>
+    </ul>
+  </li>
+  <li>Example derivation:
+    <ul>
+      <li>
+        <p>Lexicon
+<img src="images/Stabler_2010/deriv1.png" height="100" /></p>
+      </li>
+      <li>
+        <p>Apply merge (em, im)
+<img src="images/Stabler_2010/deriv2.png" height="150" /></p>
+      </li>
+      <li>
+        <p>The derivation tree
+<img src="images/Stabler_2010/deriv3.png" height="250" /></p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="mgs-and-other-formalisms">MGs and other formalisms</h3>
+
+<p><img src="images/Stabler_2010/equiv1.png" height="250" /></p>
+
+<ul>
+  <li>MG definable languages include:
+    <ul>
+      <li>finite (Fin)</li>
+      <li>regular (Reg)</li>
+      <li>context free (CF)</li>
+    </ul>
+  </li>
+  <li>MG definable languages are properly included in:
+    <ul>
+      <li>context sensitive (CS)</li>
+      <li>recursive (Rec)</li>
+      <li>recursively enumerable (RE)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Theorem 1.
+<img src="images/Stabler_2010/thm1.png" height="40" /></p>
+
+<ul>
+  <li>TAG: tree adjoining grammars</li>
+  <li>CCG: categorial combinatory grammars</li>
+  <li>MCFG: multiple context free grammars</li>
+  <li>LCFRS: linear context free rewrite systems</li>
+</ul>
+
+<h2 id="conflated-minimalist-grammars-cmgs">Conflated Minimalist Grammars (CMGs)</h2>
+
+<h3 id="conflated-and-persistent-features">Conflated and persistent features</h3>
+
+<ul>
+  <li>conflate licensee and category features, eg. a V selects a D and a T might move that same D using a -D.</li>
+  <li>can reduce size of Lexicon.</li>
+  <li>introduce persistent features, that are not removed when checked (to possibly be checked more than once).
+    <ul>
+      <li>persistent features are underlined</li>
+      <li>if features are ordered this can cause a problem by blocking access to features which follow a persistent one.
+        <ul>
+          <li>proposed solutions: unordered features or ordered features, but merge can optionally erase persistent features.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>change the definition of Merge
+&lt;img src=’images/Stabler_2010/CMG1.png’height=’150’&gt;</p>
+  </li>
+  <li>example derivation:
+    <ul>
+      <li>
+        <p>lexicon
+<img src="images/Stabler_2010/CMGderiv1.png" height="80" /></p>
+      </li>
+      <li>
+        <p>derivation tree and final tree
+<img src="images/Stabler_2010/CMGderiv2.png" height="250" /></p>
+      </li>
+      <li>
+        <p>X’ tree for comparison
+<img src="images/Stabler_2010/CMGderiv3.png" height="550" /></p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>Theorem 2.
+<script type="math/tex">CMG \equiv MG</script></p>
+
+<h2 id="phase-based-minimalist-grammars-pmgs">Phase-based Minimalist Grammars (PMGs)</h2>
+
+<h3 id="phases">Phases</h3>
+
+<ul>
+  <li>categories which make everything in their complement invisible to syntactic operations (eg. v and C)</li>
+  <li>follows: nothing can affect the linear order of the complement of a phase.</li>
+  <li>Phase Impenetrability Condition (PIC): Merge cannot apply to a tree <em>t</em>[<em>f</em>] if <em>f</em> is a phase and if the complement of the head of <em>t</em>[<em>f</em>] has any syntactic features.
+    <ul>
+      <li>restricts em and im</li>
+      <li>PIC can also be imposed on CMGs, giving Phase-based Conflated Minimalist Grammars (PCMGs)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Theorem 3.
+<script type="math/tex">PCMG \equiv CMG \equiv MG</script></p>
+
+<h2 id="relativized-minimalist-grammars-rmgs">Relativized Minimalist Grammars (RMGs)</h2>
+
+<h3 id="relativized-minimality">Relativized minimality</h3>
+
+<ul>
+  <li>SMC blocks movements where more than one Wh is involved, such as in:
+What_i do you wonder how_j [ to solve t_i t_j ]</li>
+  <li>Rizzi’s relativized minimality:
+    <ul>
+      <li>wh-phrases, subjects, adverbs, cannot move across another</li>
+      <li>unless in moved to a stressed focus positions</li>
+    </ul>
+  </li>
+  <li>But if we allow multiple wh-movements and such, we need to control for these constraints as nothing stops us from moving the second wh over the first (once the first’s wh feature has been deleted there is nothing in its syntactic features which denotes it as a wh)</li>
+  <li>Necessary modifications:
+    <ol>
+      <li>Conflate selectors with licensors and categories with licensees (as in CMGs)</li>
+      <li>We no longer delete features when checked, but use a dot that moves through the sequence of features when checked. (distinction between persistent and non-persistent still maintained).
+        <ul>
+          <li>initially:
+  <script type="math/tex">\bullet \alpha_1 \alpha_2 ... \alpha_n</script></li>
+          <li>when feature is checked:
+  <script type="math/tex">\alpha_1 \bullet \alpha_2 ... \alpha_n</script></li>
+          <li>when persistent : stays unchanged</li>
+        </ul>
+      </li>
+      <li>Define the Relativized Minimality Condition (RMC)
+ let <em>type</em> be a function that maps each basic feature <em>f</em> to the features that block movement of <em>t</em>[<em>f</em>] .
+ for any subtree <script type="math/tex">t_2</script> of tree <script type="math/tex">t_1</script> , let <em>cover</em>( <script type="math/tex">t_2</script> ) be the set of features of heads <script type="math/tex">t_1</script> (?) such that <script type="math/tex">t_1^M</script> c-commands <script type="math/tex">t_2^M</script> .
+ RMC: im applies to <script type="math/tex">t_1[=f]</script> only if
+   (i) <script type="math/tex">t_1[=*f*]</script> has exactly one subtree <script type="math/tex">t_2[f]</script>
+   (ii) <script type="math/tex">cover( t_2[f] ) \cap type(f) = \emptyset</script> .</li>
+    </ol>
+  </li>
+</ul>
+
+<p>Theorem 4.
+<script type="math/tex">RMG \equiv MG</script></p>
+
+<h3 id="multiple-movements-and-multiple-agree">Multiple movements and multiple agree</h3>
+
+<ul>
+  <li>Wh-in-situ: assume a version on Wh item does not have formal feature requiring movement to be checked</li>
+  <li>Multiple wh-fronting : SMC or RMC don’t allow im to apply to 2 -wh features.
+    <ul>
+      <li>Possible solutions:
+        <ul>
+          <li>Refine wh-features (wh-nom, wh-acc, wh-manner… )</li>
+          <li>Introduce clustering/absorption case of merge, which merge two phrases with the same first feature together.</li>
+          <li>Relax SMC to allow for a more expressive formalisms</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>MGs can easily be extended to include feature checking without movement.</li>
+</ul>
+
+<h2 id="directional-minimalist-grammars-dmgs">Directional Minimalist Grammars (DMGs)</h2>
+
+<h3 id="linearization">Linearization</h3>
+
+<ul>
+  <li>The current definitions of merge only account for ‘SVO’</li>
+  <li>Change the definition of em to account for different orders. =x feature attaches to the left, x=, to the right:
+<img src="images/Stabler_2010/dir1.png" height="100" /></li>
+</ul>
+
+<p>Theorem 5.
+<script type="math/tex">DMG \equiv MG</script></p>
+
+<ul>
+  <li>Different orders can also be derived with movement</li>
+  <li>Using MGs to provide evidence about language universals
+    <ul>
+      <li>Given a sequence 1234, only 16 of the 24 possible permutations are derivable using MGs (with less than 4 applications of im)</li>
+      <li>Cinque (2005) reports that only 14 permutations of [Dem Num Adj N] are observe (all 14 derivable with MGs).</li>
+      <li>He classifies each order according to how often in is attested (0 = unattested, 1= very few, 2 = few, 3 = many, 4 = very many)</li>
+      <li>
+        <p>Stabler classifies them for MG and DMG models (4 - <em>l</em>), where <em>l</em> is the number of licensees needed to derive the order.</p>
+
+        <p><img src="images/Stabler_2010/order1.png" height="250" /></p>
+
+        <ul>
+          <li>Pearson correlation coefficient:
+            <ul>
+              <li>Cinque and MG: 0.62</li>
+              <li>Cinque and DMG: 0.75</li>
+            </ul>
+          </li>
+          <li>DMG fits typological data without assumption of rigid SVO order</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="more-possible-variations">More possible variations</h2>
+
+<ul>
+  <li>Head movement
+    <ul>
+      <li>Can be accounted for with simple extensions (example in notes on Harkema 2001)</li>
+      <li>Weakly equivalent to MGs</li>
+    </ul>
+  </li>
+  <li>LF and PF movements
+    <ul>
+      <li>Merge does not affect linear order and only syntactic features move</li>
+      <li>PF movement for phonetic features</li>
+      <li>LF movement for semantic features</li>
+    </ul>
+  </li>
+  <li>Adjunct merge
+    <ul>
+      <li>adding another merge operation for adjunction</li>
+    </ul>
+  </li>
+  <li>Sideward movement
+    <ul>
+      <li>allow elements to move between two trees which are not merged (no longer just internal move)</li>
+    </ul>
+  </li>
+  <li>Copy and delete
+    <ul>
+      <li>Merge:
+        <ol>
+          <li>em stays unchanged</li>
+          <li><img src="images/Stabler_2010/copydel1.png" height="80" /></li>
+        </ol>
+      </li>
+      <li>The generative power of MGs with copying (MGCs) depends on the nature of function g - If g maps everything to the empty tree, then equivalent to MGs. If g maps to an identical tree except the phonetic and semantic features stay in-situ, then the MGC are not to MGs.</li>
+    </ul>
+
+    <p>Theorem 6.
+<img src="images/Stabler_2010/MGCequiv.png" height="20" /></p>
+  </li>
+</ul>
+
+
+
+    </div><!-- /.container -->
+
+  </body>
+</html>

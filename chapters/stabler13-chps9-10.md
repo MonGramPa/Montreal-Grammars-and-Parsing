@@ -4,6 +4,10 @@ title: Notes on Stabler (2013:chps.9-10)
 description: MGs, MCFGs, derivations, and derivation trees
 ---
 
+#### Stabler, E. (2013). *Computational Linguistics: Defining, calculating, using, and learning linguistic structures*. lecture notes.
+
+#### Notes by Chris Bruno, May 11, 2017
+
 # Mildly context sensitive languages
 
 Some human languages are not context free:

@@ -5,7 +5,7 @@ title: Montreal Grammars and Parsing Project
 
 <div class="main">
   <h1>Montreal Grammars and Parsing Project</h1>
-  <span class="authors">Timothy J. O'Donnell, Christopher Bruno, Daniel Harasim, Emily Kellison-Linn and Eva Portelance</span>
+  <span class="authors">Timothy J. O'Donnell, Chris Bruno, Daniel Harasim, Emily Kellison-Linn and Eva Portelance</span>
 </div>
 
 ### Chapters
