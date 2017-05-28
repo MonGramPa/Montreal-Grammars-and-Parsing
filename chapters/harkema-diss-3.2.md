@@ -8,7 +8,7 @@ description: Multiple Context-Free Grammars
 
 #### Harkema, Hendrik (2001). "Parsing Minimalist Languages". PhD thesis. University of California, Los Angeles.
 
-#### Notes by Chris Bruno, May 26, 2017
+#### Notes by Chris Bruno, May 28, 2017
 
 - Three formalisms:
     1. Minimalist Grammars (MG)

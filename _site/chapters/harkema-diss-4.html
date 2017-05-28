@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Notes on Harkema (2001:§4)</title>
+
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/theme/neat.css">
+    <link rel="stylesheet" href="/assets/css/katex.min.css">
+    <link rel="stylesheet" href="/assets/css/custom.css">
+    <link rel="stylesheet" href="/assets/css/code.css">
+
+    <script src="/assets/js/webchurch.min.js"></script>
+    <script src="/assets/js/katex.min.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/node_modules/codemirror/lib/codemirror.js"></script>
+    <script src="/node_modules/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/assets/js/cm-folding.js"></script>
+    <script src="/assets/js/cm-comments.js"></script>
+    <script src="/assets/js/webppl.min.js"></script>
+    <script src="/bower_components/jquery-autosize/jquery.autosize.min.js"></script>
+    <script src="/bower_components/d3/d3.min.js"></script>
+    <script src="/bower_components/vega/vega.min.js"></script>
+    <!-- <script src="https://probmods.org/webchurch/online/vega.min.js"></script> -->
+    <script src="/bower_components/underscore/underscore.js"></script>
+    <script src="/bower_components/react/JSXTransformer.js"></script>
+    <script src="/bower_components/react/react-with-addons.min.js"></script>
+    <script src="/bower_components/showdown/compressed/showdown.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <script type="text/jsx" src="/assets/js/editor.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Montreal Grammars and Parsing Project</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right collapse navbar-collapse">
+            <li><a href="/editor.html">Editor</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="container">
+
+      <div class="page-header">
+  <h1>Notes on Harkema (2001:§4)</h1>
+</div>
+
+<h1 id="parsing-minimalist-languages-bottom-up">Parsing Minimalist Languages bottom-up</h1>
+
+<h4 id="harkema-hendrik-2001-parsing-minimalist-languages-phd-thesis-university-of-california-los-angeles">Harkema, Hendrik (2001). “Parsing Minimalist Languages”. PhD thesis. University of California, Los Angeles.</h4>
+
+<h4 id="notes-by-chris-bruno-may-28-2017">Notes by Chris Bruno, May 28, 2017</h4>
+
+<ul>
+  <li>We specify a bottom-up recognizer for Minimalist Grammars. This recognizer:
+    <ul>
+      <li>is agenda-driven and chart-based</li>
+      <li>is similar to the CKY algorithm for Context-Free languages</li>
+      <li>uses the ‘parsing-as-deduction’ paradigm</li>
+      <li>is based on the structure building rules for the simplified rendition of Minimalist Grammars.</li>
+    </ul>
+  </li>
+  <li>The next two chapters specify:
+    <ul>
+      <li>a top-down recognizer</li>
+      <li>an Earley recognizer</li>
+    </ul>
+  </li>
+  <li>
+    <p>Recall the definition of Minimalist Grammars in which the structure-building operations are stated over tuples of chains (the ‘simplified’ formulation).</p>
+
+    <p><strong>Reformulation of a Minimalist Grammar.</strong>
+  A minimalist grammar G is a pair (<strong>Lexicon</strong>, {<strong>move</strong>, <strong>merge</strong>}):</p>
+
+    <ul>
+      <li>Vocabulary <script type="math/tex">\Sigma</script> = {<code class="highlighter-rouge">every</code>, <code class="highlighter-rouge">some</code>, <code class="highlighter-rouge">student</code>, …}</li>
+      <li>Types <script type="math/tex">T</script> = {<code class="highlighter-rouge">::</code>, <code class="highlighter-rouge">:</code>}</li>
+      <li>Syntactic features <script type="math/tex">F</script>:
+        <ul>
+          <li>Selectees: <code class="highlighter-rouge">C, T, D, N, V, P, ...</code></li>
+          <li>Selectors: <code class="highlighter-rouge">=C, =T, =D, =N, =V, =P, ...</code></li>
+          <li>Licensors: <code class="highlighter-rouge">+wh, +case, +focus, ...</code></li>
+          <li>Licensees: <code class="highlighter-rouge">-wh, -case, -focus, ...</code></li>
+          <li>Chains <script type="math/tex">C = \Sigma* \land T \land F*</script></li>
+          <li>Expressions <script type="math/tex">E = C*</script></li>
+          <li>Lexicon <strong>Lexicon</strong> <script type="math/tex">\subset \Sigma* \times \{::\} \times F*</script>, a finite set of 1-node trees</li>
+          <li>Structure building operations:</li>
+          <li>
+            <p><strong>merge</strong>: <script type="math/tex">(E \times E) \to E</script> is the union of the following three functions. For any <script type="math/tex">\cdot \in \{:, ::\}, \gamma \in F*, \delta \in F^+</script> and any chains <script type="math/tex">\alpha_1, \ldots, \alpha_k, \iota_1, \ldots, \iota_l</script> (where <script type="math/tex">0 \leq k, l</script>):</p>
+
+            <p><img src="images/stabler13-chps9-10/merge123.png" height="150" /></p>
+          </li>
+          <li>
+            <p><strong>move</strong>: <script type="math/tex">E \to E</script> is the union of the following two functions. For any <script type="math/tex">\gamma \in F*, \delta \in F^+</script>, satisfying the following condition:</p>
+
+            <p>(SMC) none of the chains <script type="math/tex">\alpha_1, \ldots, \alpha_{i-1}, \alpha_{i+1}, \ldots, \alpha_k</script> has <script type="math/tex">-f</script> as its first feature.</p>
+
+            <p><img src="images/stabler13-chps9-10/move12.png" height="100" /></p>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="specification-of-the-bottom-up-recognizer">Specification of the bottom-up recognizer</h1>
+
+<p>In the parsing-as-deduction paradigm:</p>
+
+<ul>
+  <li>Each formula of the deductive system asserts the existence of a tree <script type="math/tex">\tau \in CL(G)</script> with certain properties (to be specified).</li>
+  <li>The ‘formulas’ are actually called ‘items’.</li>
+  <li>The axioms correspond to lexical items.</li>
+  <li>The inference rules correspond to structure-building operations</li>
+  <li>There is a priveleged set of items called ‘goal items’. If any inference rule leads to a goal item, then the sentence is parsed.</li>
+</ul>
+
+<p>Here we specify:</p>
+
+<ul>
+  <li>the deductive system (axioms, rules, goals)</li>
+  <li>the deductive procedure (the algorithm)</li>
+</ul>
+
+<h2 id="deductive-system">Deductive System</h2>
+
+<p>Let <script type="math/tex">w = w_1\cdots w_n</script> be an input string and <script type="math/tex">G = (V, Cat, Lex, F)</script> be a MG.</p>
+
+<p><strong>Preliminary definitions.</strong></p>
+
+<ul>
+  <li><strong>Item.</strong> An item  has the form <script type="math/tex">[\alpha_0, \alpha_1, \ldots, \alpha_m]_t</script> where <script type="math/tex">m \leq \vert{}licensees\vert, t \in \{s, c\}</script> and each <script type="math/tex">\alpha_i</script> is of the form <script type="math/tex">(x_i, y_i):\gamma_i</script> where <script type="math/tex">0 \leq x_i \leq y_i \leq n</script> and <script type="math/tex">\gamma_i \in Cat^*</script>.</li>
+  <li><strong>Narrow Yield.</strong> Define <script type="math/tex">Y_n</script> a function from trees to strings:
+    <ul>
+      <li>If <script type="math/tex">\phi = [_> \tau, v]</script> then
+        <ul>
+          <li><script type="math/tex">Y_n(\phi) = Y_n(\tau) \cdot Y_n(v)</script> if <script type="math/tex">\tau</script> does not have some feature <code class="highlighter-rouge">-f</code></li>
+          <li><script type="math/tex">Y_n(\phi) = Y_n(v)</script> otherwise</li>
+        </ul>
+      </li>
+      <li>If <script type="math/tex">\phi = [_{\langle} \tau, v]</script> then
+        <ul>
+          <li><script type="math/tex">Y_n(\phi) = Y_n(\tau) \cdot Y_n(v)</script> if <script type="math/tex">v</script> does not have some feature <code class="highlighter-rouge">-f</code></li>
+          <li><script type="math/tex">Y_n(\phi) = Y_n(\tau)</script> otherwise</li>
+        </ul>
+      </li>
+      <li>If <script type="math/tex">\phi</script> is a simple tree then <script type="math/tex">Y_n(\phi) = Y(\phi)</script></li>
+    </ul>
+  </li>
+  <li><strong>Interpretation of an item.</strong> <script type="math/tex">[(x_0, y_0): \gamma_0, \ldots, (x_m, y_m): \gamma_m]_t</script> asserts that there exists a tree <script type="math/tex">\tau \in CL(G)</script> where
+    <ol>
+      <li>If <script type="math/tex">t = s</script> then <script type="math/tex">\tau</script> is simple. If <script type="math/tex">t = c</script> then <script type="math/tex">\tau</script> is complex.</li>
+      <li><script type="math/tex">Label(head(\tau)) = \gamma_0\pi\iota</script> where <script type="math/tex">\pi\iota \in P^*I^*</script>.</li>
+      <li>For every <script type="math/tex">(x_i, y_i):\gamma_i</script>, there is a leaf in <script type="math/tex">\tau</script> whose label is <script type="math/tex">\gamma_i\pi\iota</script>.</li>
+      <li>Besides the nodes labelled by <script type="math/tex">\gamma_i\pi\iota</script>, there are no other nodes with syntactic features in <script type="math/tex">\tau</script>.</li>
+      <li>If <script type="math/tex">\tau_0</script> is the subtree of <script type="math/tex">\tau</script> where <script type="math/tex">\tau_0</script> is the maximal projection of the node labelled by <script type="math/tex">\gamma_i\pi\iota</script> for any <script type="math/tex">i</script>, then <script type="math/tex">Y_n(\tau_0) = w_{x_i + 1}\cdots w_{y_i}</script>.</li>
+    </ol>
+  </li>
+  <li>
+    <p><strong>Example.</strong> A tree and the item that corresponds to its correct parse:</p>
+
+    <p><img src="images/harkema-diss/5859.png" width="220" /></p>
+  </li>
+</ul>
+
+<p><strong>The deductive system.</strong></p>
+
+<ul>
+  <li><strong>Axioms.</strong> For every <script type="math/tex">\lambda \in Lex</script> where <script type="math/tex">\lambda</script>’s syntactic features are <script type="math/tex">\gamma \in Cat^*</script> and <script type="math/tex">\lambda</script>’s phonetic features cover <script type="math/tex">w_{i+1}\cdots w_{j}</script> of <script type="math/tex">w</script>, let the following be an axiom: <script type="math/tex">[(i,j): \gamma]_s</script>.</li>
+  <li><strong>Goals.</strong> <script type="math/tex">[(0, n):</script><code class="highlighter-rouge">c</code><script type="math/tex">]_s, [(0, n):</script><code class="highlighter-rouge">c</code><script type="math/tex">]_c</script></li>
+  <li>
+    <p><strong>Rules.</strong> Let <script type="math/tex">0 \leq p, q, v, w \leq n; 0 \leq i, k, l \leq m; t, t_1, t_2 \in \{s,  c\}</script>.</p>
+
+    <p><img src="images/harkema-diss/rules1.png" width="450" /></p>
+
+    <p><img src="images/harkema-diss/rules2.png" width="450" /></p>
+  </li>
+</ul>
+
+<h2 id="deductive-procedure">Deductive procedure</h2>
+
+<ol>
+  <li>Initialize:
+    <ul>
+      <li>chart to empty set of items</li>
+      <li>agenda to the axioms</li>
+    </ul>
+  </li>
+  <li>Repeat until agenda is exhausted:
+    <ul>
+      <li>Select an item from the agenda and remove it from the agenda. Call this the <em>trigger item</em>.</li>
+      <li>Add the trigger item to the chart (if not already in the chart).</li>
+      <li>If the trigger item was actually added to the chart, generate all items that can be derived by that trigger item and any item in the chart by one application of a rule of inference. Add those items to the agenda.</li>
+    </ul>
+  </li>
+  <li>If a goal item is in the chart, the goal is proved (the string is parsed).</li>
+</ol>
+
+
+
+    </div><!-- /.container -->
+
+  </body>
+</html>
