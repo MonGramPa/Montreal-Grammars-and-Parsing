@@ -11,12 +11,12 @@ description: Multiple Context-Free Grammars
 #### Notes by Chris Bruno, May 26, 2017
 
 - Three formalisms:
-    1. Minimalist Grammars (MGs)
+    1. Minimalist Grammars (MG)
     2. Generalized Context-Free Grammars (GCFG)
     3. $$m$$-Multiple Context-Free Grammars (MCFG)
 
 <!-- TODO -->
-- **Hierarchy.**
+- **Hierarchy (weak).** MCFG $$\equiv$$  MG $$\subset$$ GCFG (Weir 1988, Michaelis 1998, Harkema 2001)
 
 # Generalized Context-Free Grammars
 
