@@ -1,3 +1,9 @@
+<h1 id="computational-linguistics">Computational Linguistics</h1>
+
+<h4 id="stabler-e-2013-computational-linguistics-defining-calculating-using-and-learning-linguistic-structures-lecture-notes">Stabler, E. (2013). <em>Computational Linguistics: Defining, calculating, using, and learning linguistic structures</em>. lecture notes.</h4>
+
+<h4 id="notes-by-chris-bruno-may-11-2017">Notes by Chris Bruno, May 11, 2017</h4>
+
 <h1 id="mildly-context-sensitive-languages">Mildly context sensitive languages</h1>
 
 <p>Some human languages are not context free:</p>
@@ -51,7 +57,7 @@
 
 <p><strong>Structure building operations.</strong> Define <strong>merge</strong> and <strong>move</strong>:</p>
 
-<p><img src="stabler13-chps9-10/mergemove.png" alt="" /></p>
+<p><img src="images/stabler13-chps9-10/mergemove.png" height="220" /></p>
 
 <p><strong>Remarks.</strong></p>
 
@@ -65,23 +71,14 @@
 
 <p><strong>Example.</strong> A grammar with a transitive verb, wh-movement, and coordination. This grammar generates an infinite language.</p>
 
-<p><img src="stabler13-chps9-10/mg1.png" alt="" /></p>
+<p><img src="images/stabler13-chps9-10/mg1.png" width="450" /></p>
 
 <p><strong>Other examples.</strong></p>
 
 <ul>
   <li>A simplified version of Mahajan’s proposal for SOVI order in Tamil.</li>
-  <li>A formalization of some of the ideas in Baker (2003)</li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>A grammar for the copy language $$L_{xx} = {xx</td>
-          <td>x \in {a, b}^+}$$.</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
+  <li>A formalization of some of the ideas in Baker (2003).</li>
+  <li>A grammar for the copy language <script type="math/tex">L_{xx} = \{xx : x \in \{a, b\}^+\}</script>.</li>
 </ul>
 
 <h1 id="simplified-mg-trees">Simplified MG trees</h1>
@@ -99,13 +96,13 @@
 <ul>
   <li>Trees are replaced by tuples of categorized strings.</li>
   <li>Each categorized string is called a <em>chain</em>.</li>
-  <li>The tuples of chains have the format <script type="math/tex">\alpha, \mu_1, \dots, \mu_n</script> where <script type="math/tex">\alpha</script> represents the head and each <script type="math/tex">\mu_i</script> is a subconstituent that has to move.</li>
+  <li>The tuples of chains have the format <script type="math/tex">\alpha, \mu_1, \ldots, \mu_n</script> where <script type="math/tex">\alpha</script> represents the head and each <script type="math/tex">\mu_i</script> is a subconstituent that has to move.</li>
   <li>Differentiate two subcases of <strong>merge</strong>: one which merges an item which has unchecked licensee features (a mover), and one which doesn’t.</li>
 </ul>
 
 <p><strong>Example.</strong> The example derivation above, reformulated:</p>
 
-<p><img src="stabler13-chps9-10/reformulated.png" alt="" /></p>
+<p><img src="images/stabler13-chps9-10/reformulated.png" height="360" /></p>
 
 <p><strong>Reformulation of a Minimalist Grammar.</strong>
 A minimalist grammar G is a pair (<strong>Lexicon</strong>, {<strong>move</strong>, <strong>merge</strong>}):</p>
@@ -127,16 +124,16 @@ A minimalist grammar G is a pair (<strong>Lexicon</strong>, {<strong>move</stron
   <li>Structure building operations:
     <ul>
       <li>
-        <p><strong>merge</strong>: <script type="math/tex">(E \times E) \to E</script> is the union of the following three functions. For any <script type="math/tex">\cdot \in \{:, ::\}, \gamma \in F*, \delta \in F^+</script> and any chains <script type="math/tex">\alpha_1, \dots, \alpha_k, \iota_1, \dots, \iota_l</script> (where <script type="math/tex">0 \leq k, l</script>):</p>
+        <p><strong>merge</strong>: <script type="math/tex">(E \times E) \to E</script> is the union of the following three functions. For any <script type="math/tex">\cdot \in \{:, ::\}, \gamma \in F*, \delta \in F^+</script> and any chains <script type="math/tex">\alpha_1, \ldots, \alpha_k, \iota_1, \ldots, \iota_l</script> (where <script type="math/tex">0 \leq k, l</script>):</p>
 
-        <p><img src="stabler13-chps9-10/merge123.png" alt="" /></p>
+        <p><img src="images/stabler13-chps9-10/merge123.png" height="150" /></p>
       </li>
       <li>
         <p><strong>move</strong>: <script type="math/tex">E \to E</script> is the union of the following two functions. For any <script type="math/tex">\gamma \in F*, \delta \in F^+</script>, satisfying the following condition:</p>
 
-        <p>(SMC) none of the chains <script type="math/tex">\alpha_1, \dots, \alpha_{i-1}, \alpha_{i+1}, \dots, \alpha_k</script> has <script type="math/tex">-f</script> as its first feature.</p>
+        <p>(SMC) none of the chains <script type="math/tex">\alpha_1, \ldots, \alpha_{i-1}, \alpha_{i+1}, \ldots, \alpha_k</script> has <script type="math/tex">-f</script> as its first feature.</p>
 
-        <p><img src="stabler13-chps9-10/move12.png" alt="" /></p>
+        <p><img src="images/stabler13-chps9-10/move12.png" height="100" /></p>
       </li>
     </ul>
   </li>
@@ -178,9 +175,9 @@ are like axioms.</li>
   B(a) <script type="math/tex">\leftarrow</script></p>
   </li>
   <li>
-    <p><strong>Example.</strong> Derived tree for ‘aabb’ <script type="math/tex">in L_{xx}</script>:</p>
+    <p><strong>Example.</strong> Derived tree for ‘aabb’ <script type="math/tex">\in L_{xx}</script>:</p>
 
-    <p><img src="stabler13-chps9-10/aabb.png" alt="" /></p>
+    <p><img src="images/stabler13-chps9-10/aabb.png" /></p>
   </li>
 </ul>
 
@@ -190,10 +187,14 @@ An MCFG is a 4-tuple <script type="math/tex">G = \langle \Sigma, N, P, S\rangle<
 <ul>
   <li><script type="math/tex">\Sigma</script> is a finite nonempty set of vocabulary elements</li>
   <li><script type="math/tex">N</script> is a finite nonempty set of categories <script type="math/tex">A</script>, where each has dimension <script type="math/tex">dim(A) > 0</script></li>
-  <li><script type="math/tex">P</script> is a set of rules of the following form, for <script type="math/tex">n \geq 0</script>
-[ B_0(\alpha_1, \dots, \alpha_{k_0}) \leftarrow
-B_1(x_{1,1}, \dots, x_{1,k_1}) \dots B_n(x_{n, 1}, \dots, x_{n, k_n})]
-where
+  <li>
+    <p><script type="math/tex">P</script> is a set of rules of the following form, for <script type="math/tex">n \geq 0</script>:</p>
+
+    <script type="math/tex; mode=display">B_0(\alpha_1, \ldots, \alpha_{k_0}) \leftarrow
+  B_1(x_{1,1}, \ldots, x_{1,k_1}) \ldots B_n(x_{n, 1}, \ldots, x_{n, k_n})</script>
+
+    <p>where</p>
+
     <ul>
       <li>For each <script type="math/tex">0 \leq i \leq n</script>, <script type="math/tex">\dim(B_i) = k_i</script></li>
       <li>Each <script type="math/tex">x_{i,j}</script> is a variable</li>
@@ -212,17 +213,17 @@ MCFGs and MGs are weakly equivalent. In fact, they are strongly equivalent in th
 
 <p><em>Example of Isomorphism.</em> The rule <strong>merge1</strong></p>
 
-<p><img src="stabler13-chps9-10/merge1.png" alt="" /></p>
+<p><img src="images/stabler13-chps9-10/merge1.png" width="650" /></p>
 
 <p>can be translated into the following MCFG rule schema:</p>
 
-<script type="math/tex; mode=display">\gamma, \alpha_1, \dots, \alpha_k: (st, t_1, \dots, t_k) \leftarrow {=f\gamma :: (s)} \quad f, \alpha_1, \dots, \alpha_k(t, t_1, \dots, t_k)</script>
+<script type="math/tex; mode=display">\gamma, \alpha_1, \ldots, \alpha_k: (st, t_1, \ldots, t_k) \leftarrow {=f\gamma :: (s)} \quad f, \alpha_1, \ldots, \alpha_k(t, t_1, \ldots, t_k)</script>
 
 <h1 id="derivations">Derivations</h1>
 
 <p>We can depict the MG derivation that produces the derived trees on the right with the <strong>derivation tree</strong> on the left:</p>
 
-<p><img src="stabler13-chps9-10/3trees.png" alt="" /></p>
+<p><img src="images/stabler13-chps9-10/3trees.png" width="100%" /></p>
 
 <p><strong>Properties.</strong></p>
 
@@ -242,9 +243,9 @@ MCFGs and MGs are weakly equivalent. In fact, they are strongly equivalent in th
   <li>
     <p><script type="math/tex">\delta</script> is a set of rules of the form</p>
 
-    <script type="math/tex; mode=display">f(q_1, \dots, q_n) \to q</script>
+    <script type="math/tex; mode=display">f(q_1, \ldots, q_n) \to q</script>
 
-    <p>where <script type="math/tex">f \in \Sigma</script> has rank <script type="math/tex">n</script> and <script type="math/tex">q_1, \dots, q_n, q \in Q</script></p>
+    <p>where <script type="math/tex">f \in \Sigma</script> has rank <script type="math/tex">n</script> and <script type="math/tex">q_1, \ldots, q_n, q \in Q</script></p>
   </li>
 </ul>
 
@@ -273,13 +274,11 @@ For our tree acceptor <script type="math/tex">M = (\Sigma, Q, F, \delta)</script
 
 <p>Then our rule schemas are:</p>
 
-<hr />
-<p>(lex)       <script type="math/tex">w :: \alpha() \to \alpha</script> [for each <script type="math/tex">w :: \alpha \in G</script>]
-   (merge1,2)  <script type="math/tex">\bullet((=x \alpha, \mu_1), (x, \mu_2)) \to (\alpha, \mu_1 \cup \mu_2)</script>
-   (merge2)    <script type="math/tex">\bullet((=x \alpha), (\mu_1, x\beta, \mu_2)) \to (\alpha, \{\beta\} \cup \mu_1 \cup \mu_2)</script>
-   (move1)     <script type="math/tex">\circ((+x \alpha, \mu_1 \cup \{-x\})) \to (\alpha, \mu_1)</script>  [if SMC]
-   (move2)     <script type="math/tex">\circ((+x \alpha, \mu_1 \cup \{-x\beta\})) \to (\alpha, \mu_1 \cup \{\beta\})</script> [if SMC]
-   ———– ——————————–</p>
+<p>(lex)       <script type="math/tex">w :: \alpha() \to \alpha</script> [for each <script type="math/tex">w :: \alpha \in G</script>]<br />
+   (merge1,2)  <script type="math/tex">\bullet((=x \alpha, \mu_1), (x, \mu_2)) \to (\alpha, \mu_1 \cup \mu_2)</script><br />
+   (merge2)    <script type="math/tex">\bullet((=x \alpha), (\mu_1, x\beta, \mu_2)) \to (\alpha, \{\beta\} \cup \mu_1 \cup \mu_2)</script><br />
+   (move1)     <script type="math/tex">\circ((+x \alpha, \mu_1 \cup \{-x\})) \to (\alpha, \mu_1)</script>  [if SMC]<br />
+   (move2)     <script type="math/tex">\circ((+x \alpha, \mu_1 \cup \{-x\beta\})) \to (\alpha, \mu_1 \cup \{\beta\})</script> [if SMC]</p>
 
 <p><strong>Intuition.</strong></p>
 
@@ -292,12 +291,12 @@ For our tree acceptor <script type="math/tex">M = (\Sigma, Q, F, \delta)</script
 <p><strong>Example.</strong>
 We want to accept this derivation tree:</p>
 
-<p><img src="stabler13-chps9-10/dtree1.png" alt="" /></p>
+<p><img src="images/stabler13-chps9-10/dtree1.png" height="160" /></p>
 
 <p>Apply rule (lex):</p>
 
-<p><img src="stabler13-chps9-10/lex.png" alt="" /></p>
+<p><img src="images/stabler13-chps9-10/lex.png" height="180" /></p>
 
 <p>Apply the other rules bottom-up:</p>
 
-<p><img src="stabler13-chps9-10/steps1-5.png" alt="" /></p>
+<p><img src="images/stabler13-chps9-10/steps1-5.png" height="200" /></p>
