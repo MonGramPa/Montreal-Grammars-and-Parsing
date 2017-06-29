@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Montreal Grammars and Parsing Project</title>
+    <title>Notes on Daniel's parser</title>
 
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
@@ -58,33 +58,89 @@
 
     <div class="container">
 
-      <div class="main">
-  <h1>Montreal Grammars and Parsing Project</h1>
-  <span class="authors">Timothy J. O'Donnell, Chris Bruno, Daniel Harasim, Emily Kellison-Linn Eva Portelance and Elias Stengel-Eskin</span>
+      <div class="page-header">
+  <h1>Notes on Daniel's parser</h1>
 </div>
 
-<h3 id="chapters">Chapters</h3>
+<h1 id="data-structures-in-daniels-parser">Data structures in Daniel’s parser</h1>
+<p>Some notes taken last May. Eva P. 06/2017</p>
+
+<h3 id="recursive-type-structures">Recursive type structures</h3>
+
+<script type="math/tex; mode=display">constituent \rightarrow  completion \rightarrow edge \rightarrow traversal \rightarrow constituent</script>
+
+<ul>
+  <li>constituent *
+    <ul>
+      <li>start/end</li>
+      <li>list of completions</li>
+    </ul>
+  </li>
+  <li>completion (2 types : Terminal and non-terminal)
+    <ul>
+      <li>edge</li>
+      <li>rule (from Grammar)</li>
+    </ul>
+  </li>
+  <li>edge *
+    <ul>
+      <li>start/end</li>
+      <li>list of traversals</li>
+    </ul>
+  </li>
+  <li>traversal
+    <ul>
+      <li>previous edges</li>
+      <li>constituent</li>
+    </ul>
+  </li>
+</ul>
+
+<p>* Items: (constituents and edges) The places with choices for different possible trees</p>
+
+<h4 id="probabilities">Probabilities</h4>
 
 <ul>
   <li>
-    <p><a href="/chapters/HarasimParser-DataStruct.html">Notes on Daniel’s parser</a><br />
-  <em>Data structures in Parser</em></p>
+    <p>constituent
+<script type="math/tex">P \rightarrow \Sigma P(completions)</script></p>
   </li>
   <li>
-    <p><a href="/chapters/Stabler_2010_notes.html">Notes on Stabler (2010)</a><br />
-  <em>MG variants</em></p>
+    <p>completion
+<script type="math/tex">P \rightarrow \Sigma P(edge) \times P(rule)</script></p>
   </li>
   <li>
-    <p><a href="/chapters/harkema-diss-3.2.html">Notes on Harkema (2001:§3.2)</a><br />
-  <em>Multiple Context-Free Grammars</em></p>
+    <p>edge
+<script type="math/tex">P \rightarrow \Sigma P(traversals)</script></p>
   </li>
   <li>
-    <p><a href="/chapters/harkema-diss-4.html">Notes on Harkema (2001:§4)</a><br />
-  <em>Parsing Minimalist Languages bottom-up</em></p>
+    <p>traversal
+<script type="math/tex">P \rightarrow \Sigma P(constituent) \times P(</script> edge it came from <script type="math/tex">)</script></p>
   </li>
-  <li>
-    <p><a href="/chapters/stabler13-chps9-10.html">Notes on Stabler (2013:chps.9-10)</a><br />
-  <em>MGs, MCFGs, derivations, and derivation trees</em></p>
+</ul>
+
+<h3 id="other-structures">Other Structures</h3>
+
+<ul>
+  <li>Logbook
+    <ul>
+      <li>everything discovered</li>
+    </ul>
+  </li>
+  <li>Chart
+    <ul>
+      <li>
+        <script type="math/tex; mode=display">Chart \cap Agenda = \emptyset</script>
+      </li>
+      <li>completed items</li>
+    </ul>
+  </li>
+  <li>Agenda
+    <ul>
+      <li>Before going to chart</li>
+      <li>incomplete items (we don’t know everything about them yet)</li>
+      <li>priority Q</li>
+    </ul>
   </li>
 </ul>
 

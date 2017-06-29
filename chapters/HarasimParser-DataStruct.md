@@ -9,7 +9,7 @@ Some notes taken last May. Eva P. 06/2017
 
 ### Recursive type structures
 
- $$ constituent → completion → edge → traversal → constituent $$
+ $$ constituent \rightarrow  completion \rightarrow edge \rightarrow traversal \rightarrow constituent $$
 
 
  * constituent \*
@@ -33,16 +33,16 @@ Some notes taken last May. Eva P. 06/2017
 #### Probabilities
 
 * constituent
-  $$ P → Σ P(completions) $$
+  $$ P \rightarrow \Sigma P(completions) $$
 
 * completion
-  $$ P → Σ P(edge) × P(rule) $$
+  $$ P \rightarrow \Sigma P(edge) \times P(rule) $$
 
 * edge
-  $$ P → Σ P(traversals) $$
+  $$ P \rightarrow \Sigma P(traversals) $$
 
 * traversal
-  $$ P → Σ P(constituent)× P(edge it came from) $$
+  $$ P \rightarrow \Sigma P(constituent) \times P($$ edge it came from $$ ) $$
 
 
 ### Other Structures  
@@ -50,7 +50,7 @@ Some notes taken last May. Eva P. 06/2017
  * Logbook
     - everything discovered
  * Chart
-    - $$ Chart ∩ Agenda = ∅ $$
+    - $$ Chart \cap Agenda = \emptyset $$
     - completed items
  * Agenda
     - Before going to chart
