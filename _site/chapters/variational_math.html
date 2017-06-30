@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Derivations of Variational Bayesian Formulas</title>
+    <title>Variational Math Derivation</title>
 
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
@@ -59,7 +59,7 @@
     <div class="container">
 
       <div class="page-header">
-  <h1>Derivations of Variational Bayesian Formulas</h1>
+  <h1>Variational Math Derivation</h1>
 </div>
 
 <h1 id="introduction">Introduction</h1>
@@ -69,21 +69,21 @@
 <p>The model we are working with is the Adaptor Grammar model, first
 introduced in @Johnson2007. Specifically, we’ll be giving some
 background and fleshing out the derivations for the variational Adaptor
-Grammar presented in @Cohen2010. If you haven’t already, read these two
+Grammar presented in @Cohesssn2010. If you haven’t already, read these two
 papers before going further.</p>
 
 <h2 id="the-problem">The Problem</h2>
 
 <p>Given our generative model (the adaptor grammar) and our data, we would
-like to find a posterior distribution: $P(Hypothesis | Evidence)$. Using
+like to find a posterior distribution: <script type="math/tex">P(Hypothesis \mid  Evidence)</script>. Using
 Bayes’ Rule, we get:
-<script type="math/tex">P(H|E) = \frac{P(E|H)P(H)}{P(E)} = \frac{P(E|H)P(H)}{\sum\limits_{\forall H} P(E|H) P(H)}</script>
+<script type="math/tex">P(H\mid E) = \frac{P(E\mid H)P(H)}{P(E)} = \frac{P(E\mid H)P(H)}{\sum\limits_{\forall H} P(E\mid H) P(H)}</script>
 We call the numerator of the fraction on the right the “generative
 model”. It is composed of the product of the likelihood <em>of the
-hypothesis</em> ($P(E|H)$) and the prior probability of the hypothesis
-($P(H)$). Note that the former is not a probability but a measure of how
+hypothesis</em> (<script type="math/tex">P(E\mid H)</script>) and the prior probability of the hypothesis
+(<script type="math/tex">P(H)</script>). Note that the former is not a probability but a measure of how
 well our hypothesis fits the data. The denominator is the “marginal
-likelihood” of the data, $P(E)$. To find this, we need to marginalize
+likelihood” of the data, <script type="math/tex">P(E)</script>. To find this, we need to marginalize
 out (sum over) all possible hypotheses. Because the hypotheses are the
 range of values for all of the latent variables in our model, this
 summation is computationally intractable. In order to obtain a
@@ -94,59 +94,43 @@ multiple cores. The variational Bayesian approach, on the other hand,
 treats the problem of finding an appropriate marginal distribution as an
 optimization problem (this will be explained in more detail).</p>
 
-<h2 id="definitions">Definitions</h2>
-
 <ul>
-  <li>
-    <p>Let $Z$ be our set of hidden variable collections:\
-\</p>
-
-    <div class="highlighter-rouge"><pre class="highlight"><code> $\Theta = \{\Theta_A | A \in \mathcal{N}\}$           PCFG Multinomials   ------------------------------------------------- --------------------------------
-    $\nu = \{\nu_A | A \in \mathcal{M}\}$           stick length proportions    $z_a = \{z_{A,i} | A \in M, i \in \{1,...\} \}$   adapted nonterminal’s subtrees
-     $z' = \{z_A | A \in \mathcal{M}\}$            the full tree derivations
-</code></pre>
-    </div>
+  <li>Let <script type="math/tex">Z</script> be our set of hidden variable collections:
+    <ul>
+      <li><script type="math/tex">\Theta = \{\Theta_A \mid  A \in \mathcal{N}\}</script>: PCFG Multinomials</li>
+      <li><script type="math/tex">\nu = \{\nu_A \mid  A \in \mathcal{M}\}</script>: stick length proportions</li>
+      <li><script type="math/tex">z_a = \{z_{A,i} \mid  A \in M, i \in \{1,...\} \}</script>: adapted nonterminal’s subtrees</li>
+      <li><script type="math/tex">z' = \{z_A \mid  A \in \mathcal{M}\}</script>: the full tree derivations</li>
+    </ul>
   </li>
   <li>
-    <p>Let $\Phi$ be the collection of all model parameters (Pitman-Yor
-parameters $a,b$ and Dirichlet distribution parameter $\alpha$.</p>
+    <p>Let <script type="math/tex">\Phi</script> be the collection of all model parameters (Pitman-Yor
+parameters <script type="math/tex">a,b</script> and Dirichlet distribution parameter <script type="math/tex">\alpha</script>.</p>
   </li>
   <li>
-    <p>Let $X$ be the set of observations. In the case of word
+    <p>Let <script type="math/tex">X</script> be the set of observations. In the case of word
 segmentation, for example, these would be each string of unsegmented
 phonemes.</p>
   </li>
   <li>
-    <p>Note that our goal is to find $P(Z|X)$, the posterior (where $Z$ is
+    <p>Note that our goal is to find <script type="math/tex">P(Z\mid X)</script>, the posterior (where <script type="math/tex">Z</script> is
 the set of latent variables)</p>
   </li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>$P(Z</td>
-          <td>X) = \frac{P(X</td>
-          <td>Z, \Phi)P(Z</td>
-          <td>\Phi)}{\sum\limits_{\forall Z} P(X</td>
-          <td>Z, \Phi) P(Z</td>
-          <td>\Phi) } $</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
+  <li>recall <script type="math/tex">P(Z\mid X) = \frac{P(X\mid Z, \Phi)P(Z \mid  \Phi)}{\sum\limits_{\forall Z} P(X\mid Z, \Phi) P(Z\mid \Phi) }</script></li>
 </ul>
 
 <p>Let’s also write out the generative model as a joint probability
-distribution: <script type="math/tex">\begin{aligned}
-P(X|Z, \Phi)P(Z|\Phi) = P(X|z', z_a, \Theta, \nu, a, b, \alpha)P(Z|G, a,b,\alpha)= \\
-P(X|z', z_A, G, \nu, \Theta, a, b, \alpha)\\
-\times P(z' | z_a, G, \nu, \Theta, a, b, \alpha) \\
-\times P(z_a | G, \nu, \Theta, a,b,\alpha) \\
-\times P(\nu | a,b)\\
-\times P(\Theta|\alpha)
-\end{aligned}</script> This shows the dependencies in the generative model. For
-example, $\Theta$, the PCFG multinomial, only depends on $\alpha$, the
-Dirichlet distribution hyperparameter, but $z’$, the full tree
+distribution: 
+<script type="math/tex">P(X\mid Z, \Phi)P(Z\mid \Phi) = P(X\mid z', z_a, \Theta, \nu, a, b, \alpha)P(Z\mid G, a,b,\alpha)=</script> <br />
+<script type="math/tex">P(X\mid z', z_A, G, \nu, \Theta, a, b, \alpha)</script> <br />
+<script type="math/tex">\times P(z' \mid  z_a, G, \nu, \Theta, a, b, \alpha)</script> <br />
+<script type="math/tex">\times P(z_a \mid  G, \nu, \Theta, a,b,\alpha)</script> <br />
+<script type="math/tex">\times P(\nu \mid  a,b)</script> <br />
+<script type="math/tex">\times P(\Theta\mid \alpha)</script></p>
+
+<p>This shows the dependencies in the generative model. For
+example, <script type="math/tex">\Theta</script>, the PCFG multinomial, only depends on <script type="math/tex">\alpha</script>, the
+Dirichlet distribution hyperparameter, but <script type="math/tex">z'</script>, the full tree
 derivations, depend on the whole rest of the model. These dependencies
 will appear again later.</p>
 
@@ -156,14 +140,14 @@ will appear again later.</p>
 
 <ul>
   <li>
-    <p>Jensen’s inequality states that for a convex function $f$ and random
-variable $X$: <script type="math/tex">f(\mathbb{E}[X]) \leq \mathbb{E}[f(X)]</script></p>
+    <p>Jensen’s inequality states that for a convex function <script type="math/tex">f</script> and random
+variable <script type="math/tex">X</script>: <script type="math/tex">f(\mathbb{E}[X]) \leq \mathbb{E}[f(X)]</script></p>
   </li>
   <li>
     <p>We’re using the logs of probabilities here, so our function is
 actually concave. As it turns out, Jensen’s inequality works both
 ways, meaning we just switch the direction of the inequality:
-<script type="math/tex">log(\mathbb{E}[X]) \geq \mathbb{E}[log(X)]</script></p>
+<script type="math/tex">\log(\mathbb{E}[X]) \geq \mathbb{E}[\log(X)]</script></p>
   </li>
 </ul>
 
@@ -178,7 +162,7 @@ in this case)
 <h2 id="logarithms">Logarithms</h2>
 
 <p>Throughout this derivation (and the variational literature as a whole)
-you will see $\log\ P(…)$. There are various reasons to take the log
+you will see <script type="math/tex">\log\ P(...)</script>. There are various reasons to take the log
 of a probability. Some of these are more mathematical (as you’ll see, it
 will appear in several expanded formulas) and some are more practical
 taking a logarithm allows us to transform expensive multiplication and
@@ -188,13 +172,13 @@ represent. Recall from high school math:</p>
 
 <ul>
   <li>
-    <p>$\lim\limits_{n\rightarrow 0} \log\ n = -\infty$</p>
+    <p>.<script type="math/tex">\lim\limits_{n\rightarrow 0} \log\ n = -\infty</script></p>
   </li>
   <li>
-    <p>$\log\ AB = \log\ A + \log\ B$</p>
+    <p>.<script type="math/tex">\log\ AB = \log\ A + \log\ B</script></p>
   </li>
   <li>
-    <p>$\log\ \frac{A}{B} = \log\ A - \log\ B$</p>
+    <p>.<script type="math/tex">\log\ \frac{A}{B} = \log\ A - \log\ B</script></p>
   </li>
 </ul>
 
@@ -206,225 +190,176 @@ represent. Recall from high school math:</p>
 likelihood of the data integrated over all hypotheses. Recall that our
 inference problem lies in finding the denominator to the Bayesian
 equation
-<script type="math/tex">P(H|E) = \frac{P(E|H)P(H)}{\int\limits_{\forall H} P(E|H) P(H) dH}</script>
+<script type="math/tex">P(H\mid E) = \frac{P(E\mid H)P(H)}{\int\limits_{\forall H} P(E\mid H) P(H) dH}</script>
 Our hypotheses in this case are possible values for the latent variables
 in the model. This integral (or in this case summation) is
 computationally intractable, so we use a variational approximation for
 it.\
-One way we can do this is by using the KL divergence between this
-intractable integral and some variational distribution $q$.\</p>
+One way we can do this is by using the Kullback Leibler (KL) divergence between this
+intractable integral and some variational distribution <script type="math/tex">q</script>.\</p>
 
 <ol>
   <li>
-    <p>Let $q_\nu(Z)$ be a family of variational distributions with
-variational parameter $\nu$.</p>
+    <p>Let <script type="math/tex">q_\nu(Z)</script> be a family of variational distributions with
+variational parameter <script type="math/tex">\nu</script>.</p>
   </li>
   <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>to get the marginal likelihood ($\log\ p(X</td>
-          <td>\Phi)$) we will take the</td>
-        </tr>
-        <tr>
-          <td>KL divergence between $q_\nu(Z)$ and $p(Z</td>
-          <td>X,\Phi)$.</td>
-        </tr>
-      </tbody>
-    </table>
+    <p>to get the marginal likelihood (<script type="math/tex">\log\ p(X\mid \Phi)</script>) we will take the
+KL divergence between <script type="math/tex">q_\nu(Z)</script> and <script type="math/tex">p(Z\mid X,\Phi)</script>.</p>
   </li>
-  <li>KL divergence is given by:</li>
+  <li>
+    <p>KL divergence is given by:</p>
+  </li>
 </ol>
 
-<script type="math/tex; mode=display">\begin{aligned}
-D_{KL}(q_\nu (Z) || p(Z|X,\Phi)) = \mathbb{E}_q[\log\ \frac{q_\nu(Z)}{p(Z|X,\Phi)}] \\
-= \mathbb{E}_q [\log\ q_\nu(Z)- \log\ p(Z|X, \Phi)] \\
-= \mathbb{E}_q [\log\ q_\nu(Z)- \log\ \frac{p(Z,X|\Phi)}{p(X|\Phi)}] \\
-= \mathbb{E}_q [\log\ q_\nu(Z)- (\log\ p(Z,X|\Phi) - \log\ p(X|\Phi))] \\
-= \mathbb{E}_q [\log\ q_\nu(Z)] - \mathbb{E}_q [\log\ p(Z,X|\Phi)] + \log\ p(X|\Phi)
-\end{aligned}</script>
+<p><script type="math/tex">D_{KL}(q_\nu (Z) \mid \mid  p(Z\mid X,\Phi)) = \mathbb{E}_q[\log\ \frac{q_\nu(Z)}{p(Z\mid X,\Phi)}]</script> <br />
+<script type="math/tex">= \mathbb{E}_q [\log\ q_\nu(Z)- \log\ p(Z\mid X, \Phi)]</script> <br />
+<script type="math/tex">= \mathbb{E}_q [\log\ q_\nu(Z)- \log\ \frac{p(Z,X\mid \Phi)}{p(X\mid \Phi)}]</script> <br />
+<script type="math/tex">= \mathbb{E}_q [\log\ q_\nu(Z)- (\log\ p(Z,X\mid \Phi) - \log\ p(X\mid \Phi))]</script> <br />
+<script type="math/tex">= \mathbb{E}_q [\log\ q_\nu(Z)] - \mathbb{E}_q [\log\ p(Z,X\mid \Phi)] + \log\ p(X\mid \Phi)</script></p>
 
 <p>[@blei.d:2006] If we think about what KL divergence represents, we can
 intuitively understand why it cannot be negative. From here, we can see
 how minimizing this equation is the same as maximizing the lower bound
-on $\log\ p(X|\Phi)$ $$\begin{aligned}
-0 \leq \mathbb{E}<em>q [\log\ q</em>\nu(Z)] - \mathbb{E}_q [\log\ p(Z,X|\Phi)] + \log\ p(X|\Phi)\</p>
-<ul>
-  <li>\log\ p(X|\Phi) \leq \mathbb{E}<em>q [\log\ q</em>\nu(Z)] - \mathbb{E}<em>q [\log\ p(Z,X|\Phi)]  <br />
-\log\ p(X|\Phi) \geq \mathbb{E}_q [\log\ p(Z,X|\Phi)] - \mathbb{E}_q [\log\ q</em>\nu(Z)]
-\end{aligned}<script type="math/tex">Another way to reach this same equation is by using
-Jensen’s inequality. Consider the log marginal likelihood:</script>\log\ p(x|\Phi) = \log\ \sum\limits_{\forall z \in \mathbf{Z}} p(x,z|\Phi)<script type="math/tex">\
-The sum marginalizes out the hidden variables $z$ in the joint
-probability distribution. Picking any variational distribution $q(z)$ we
-can multiply the by $\frac{q(z)}{q(z)}$:\</script>\log\ \sum\limits_{\forall z \in \mathbf{Z}} ( p(x,z|\Phi) * \frac{q(z)}{q(z)} ) = \log\ \sum\limits_{\forall z \in \mathbf{Z}} q(z) \frac{ p(x,z|\Phi) }{q(z)}<script type="math/tex">Jensen’s inequality implies</script>\log\ \sum\limits_{\forall z \in \mathbf{Z}} q(z) \frac{p(x,z|\Phi) }{q(z)}  \geq \sum\limits_{\forall z \in \mathbf{Z}} q(z) \log\ \frac{ p(x,z|\Phi) }{q(z)}<script type="math/tex">Recall that $\log\ (\frac{x}{y})= \log\ (x) - \log\ (y)$. So this
-equation can be broken into:</script>\begin{aligned} \sum\limits_{\forall z \in \mathbf{Z}} q(z) \log\ \frac{ p(x,z|\Phi) }{q(z)}= \sum\limits_{\forall z \in \mathbf{Z}} q(z) (\log p(x,z|\Phi) - \log q(z)) = \ 
-\sum\limits_{\forall z \in \mathbf{Z}} q(z) \log p(x,z|\Phi) - \sum\limits_{\forall z \in \mathbf{Z}}  q(z)\log\ q(z) =  <br />
-\sum\limits_{\forall z \in \mathbf{Z}} q(z) \log p(x,z|\Phi) +
-\mathcal{H}(q) \end{aligned}$$ where $\mathcal{H}(q) =  -
-\sum\limits_{\forall z \in \mathbf{Z}}  q(z)\log\ q(z)$
+on <script type="math/tex">\log\ p(X\mid \Phi)</script></p>
+
+<p><script type="math/tex">0 \leq \mathbb{E}_q [\log\ q_\nu(Z)] - \mathbb{E}_q [\log\ p(Z,X\mid \Phi)] + \log\ p(X\mid \Phi)</script> <br />
+<script type="math/tex">- \log\ p(X\mid \Phi) \leq \mathbb{E}_q [\log\ q_\nu(Z)] - \mathbb{E}_q [\log\ p(Z,X\mid \Phi)]</script> <br />
+<script type="math/tex">\log\ p(X\mid \Phi) \geq \mathbb{E}_q [\log\ p(Z,X\mid \Phi)] - \mathbb{E}_q [\log\ q_\nu(Z)]</script></p>
+
+<p>Another way to reach this same equation is by using
+Jensen’s inequality. Consider the log marginal likelihood:
+<script type="math/tex">\log\ p(x\mid \Phi) = \log\ \sum\limits_{\forall z \in \mathbf{Z}} p(x,z\mid \Phi)</script>\
+The sum marginalizes out the hidden variables <script type="math/tex">z</script> in the joint
+probability distribution. Picking any variational distribution <script type="math/tex">q(z)</script> we
+can multiply the by <script type="math/tex">\frac{q(z)}{q(z)}</script>:\
+<script type="math/tex">\log\ \sum\limits_{\forall z \in \mathbf{Z}} ( p(x,z\mid \Phi) * \frac{q(z)}{q(z)} ) = \log\ \sum\limits_{\forall z \in \mathbf{Z}} q(z) \frac{ p(x,z\mid \Phi) }{q(z)}</script>
+Jensen’s inequality implies
+<script type="math/tex">\log\ \sum\limits_{\forall z \in \mathbf{Z}} q(z) \frac{p(x,z\mid \Phi) }{q(z)}  \geq \sum\limits_{\forall z \in \mathbf{Z}} q(z) \log\ \frac{ p(x,z\mid \Phi) }{q(z)}</script>
+Recall that <script type="math/tex">\log\ (\frac{x}{y})= \log\ (x) - \log\ (y)</script>. So this
+equation can be broken into: <br /></p>
+
+<p><script type="math/tex">\sum\limits_{\forall z \in \mathbf{Z}} q(z) \log\ \frac{ p(x,z\mid \Phi) }{q(z)}= \sum\limits_{\forall z \in \mathbf{Z}} q(z) (\log p(x,z\mid \Phi) - \log q(z)) =</script> <br />
+<script type="math/tex">\sum\limits_{\forall z \in \mathbf{Z}} q(z) \log p(x,z\mid \Phi) - \sum\limits_{\forall z \in \mathbf{Z}}  q(z)\log\ q(z) =</script> <br />
+<script type="math/tex">\sum\limits_{\forall z \in \mathbf{Z}} q(z) \log p(x,z\mid \Phi) + \mathcal{H}(q)</script> <br />
+where <script type="math/tex">\mathcal{H}(q) =  - \sum\limits_{\forall z \in \mathbf{Z}}  q(z)\log\ q(z)</script>
 [@blei2017variational]. This first term is of the form of our expected
-value definition in §1.3, so our equation becomes:</li>
-</ul>
+value definition in §1.3, so our equation becomes:</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
-\log\ p(x|\Phi) \geq \mathbb{E}_q[\log\ p(x,z|\Phi)] + \mathcal{H}(q)
-\end{aligned}</script>
+<p><br />
+<script type="math/tex">\log\ p(x\mid \Phi) \geq \mathbb{E}_q[\log\ p(x,z\mid \Phi)] + \mathcal{H}(q)</script>
+<br /></p>
 
-<p>This derivation yields an important fact:
-<script type="math/tex">\log\ p(X|\Phi) - KL(q(Z) || p(Z|X, \Phi)) = \mathbb{E}_q[\log\ p(z,x | \Phi)] + H(q)</script>
+<p>This derivation yields an important fact: <br />
+<script type="math/tex">\log\ p(X\mid \Phi) - KL(q(Z) \mid \mid  p(Z\mid X, \Phi)) = \mathbb{E}_q[\log\ p(z,x \mid  \Phi)] + H(q)</script> <br />
 From this equation, we can see why minimizing KL divergence gives us the
 best possible value for our marginal likelihood.</p>
 
 <h2 id="applying-variational-methods-to-the-model">Applying variational methods to the model</h2>
 
 <p>Recall our full joint probability distribution for our generative model
-from §1.2: <script type="math/tex">\begin{aligned}
-P(X|Z, \Phi)P(Z|\Phi) = P(X|z', z_a, \Theta, \nu, a, b, \alpha)P(Z|G, a,b,\alpha)= \\
-P(X|z', z_A, G, \nu, \Theta, a, b, \alpha)\\
-\times P(z' | z_a, G, \nu, \Theta, a, b, \alpha) \\
-\times P(z_a | G, \nu, \Theta, a,b,\alpha) \\
-\times P(\nu | a,b)\\
-\times P(\Theta|\alpha)
-\end{aligned}</script></p>
+from §1.2: 
+<script type="math/tex">P(X\mid Z, \Phi)P(Z\mid \Phi) = P(X\mid z', z_a, \Theta, \nu, a, b, \alpha)P(Z\mid G, a,b,\alpha)=</script> <br />
+<script type="math/tex">P(X\mid z', z_A, G, \nu, \Theta, a, b, \alpha)</script> <br />
+<script type="math/tex">\times P(z' \mid  z_a, G, \nu, \Theta, a, b, \alpha)</script> <br />
+<script type="math/tex">\times P(z_a \mid  G, \nu, \Theta, a,b,\alpha)</script> <br />
+<script type="math/tex">\times P(\nu \mid  a,b)</script> <br />
+<script type="math/tex">\times P(\Theta\mid \alpha)</script></p>
 
 <p>Recall that doing variational inference requires inference only over our
-latent variables. This is because given the rest of our model, we can
-calculate $ P(X|z’, z_a, \Theta, \nu, a, b, \alpha) $ fairly quickly.
-However, to do so we need to do variational inference on
-$P(Z|G, a,b,\alpha)$. This part expands to: <script type="math/tex">\begin{aligned}
-P(z' | z_a, G, \nu, \Theta, a, b, \alpha) \\
-\times P(z_a | G, \nu, \Theta, a,b,\alpha) \\
-\times P(\nu | a,b)\\
-\times P(\Theta|\alpha)
-\end{aligned}</script></p>
+latent variables. This is because given a full tree derivation <script type="math/tex">z'</script>, the relationship between <script type="math/tex">z'</script> and <script type="math/tex">X</script> is deterministic in the sense that the yields of the derivations in <script type="math/tex">z'</script> map exactly to the strings in <script type="math/tex">X</script>.
+However, to get to <script type="math/tex">z'</script> we need to do variational inference on
+<script type="math/tex">P(Z\mid G, a,b,\alpha)</script>. This part expands to:</p>
 
-<p>Since we know exactly which elements are in $\mathbf{Z}$ we can expand
-this sum: $$\begin{aligned}
-= \mathcal{H}(q) + \mathbb{E}_q[\log\ p(x, \Theta | \Phi)</p>
-<ul>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>\log\ p(x, \nu</td>
-          <td>\Phi)</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>\log\ p(x, z_A</td>
-          <td>\Phi)</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-  <li>\log\ p(x, z’ | \Phi)] 
-\end{aligned}<script type="math/tex"></script>\begin{aligned}
-= \mathcal{H}(q) + \mathbb{E}_q[\log\ p(x, \Theta | \Phi)] \</li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>\mathbb{E}_q[\log\ p(x, \nu</td>
-          <td>\Phi) ]\</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>\mathbb{E}_q[\log\ p(x, z_A</td>
-          <td>\Phi)] \</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-  <li>\mathbb{E}_q[\log\ p(x, z’ | \Phi)] <br />
-\end{aligned}<script type="math/tex">We also know from the definition of our model which
-hidden variables depend on which model parameters: $\Theta$ depends only
-on $\alpha$ since each $\Theta_A ~ Dir(\alpha_A)$. $\nu$ depends on
-$a = {a,b}$ ($\nu_a ~ Beta(a_A,b_A)$), the adapted nonterminal subtrees
-$z_A$ depend on both $\Theta$ and $\nu$ and the full tree derivation
-depends on $\nu$. We can use this information to rewrite the equation
-more accurately:</script>\begin{aligned}
-= \mathcal{H}(q) + \mathbb{E}_q[\log\ p(x, \Theta | \alpha)] \</li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>\mathbb{E}_q[\log\ p(x, \nu</td>
-          <td>a) ]\</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>\mathbb{E}_q[\log\ p(x, z_A</td>
-          <td>\nu, \Theta)] \</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-  <li>\mathbb{E}<em>q[\log\ p(x, z’ | \nu)] <br />
-\end{aligned}<script type="math/tex">Finally, we know from our definition of
-$\Theta,\ \nu,\ z_A,$ and $z$ in §1.1 that we can decompose them into
-their subscripted constituents. This gives us:</script>\begin{aligned}
-= \sum\limits</em>{A\in\mathcal{M}}( \mathcal{H}(q) + \mathbb{E}_q[\log\ p(x, \Theta | \alpha)] \</li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>\mathbb{E}_q[\log\ p(x, \nu</td>
-          <td>a) ]\</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>\mathbb{E}_q[\log\ p(x, z_A</td>
-          <td>\nu, \Theta)] \</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-  <li>\mathbb{E}<em>q[\log\ p(x, z’ | \nu)] )<br />
-\end{aligned}<script type="math/tex"></script>\begin{aligned}
-= \mathcal{H}(q) + \sum\limits</em>{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, \Theta | \alpha)] \</li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>\sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, \nu</td>
-          <td>a) ]\</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>\sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, z_A</td>
-          <td>\nu, \Theta)] \</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-  <li>\sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, z’ | \nu)] <br />
-\end{aligned}$$</li>
-</ul>
+<p><script type="math/tex">P(z' \mid  z_a, G, \nu, \Theta, a, b, \alpha)</script> <br />
+<script type="math/tex">\times P(z_a \mid  G, \nu, \Theta, a,b,\alpha)</script> <br />
+<script type="math/tex">\times P(\nu \mid  a,b)</script> <br />
+<script type="math/tex">\times P(\Theta\mid \alpha)</script></p>
+
+<p>So going back to our equation for the marginal probability, we need to find <br />
+<script type="math/tex">\mathbb{E}_q [\log\ P(Z\mid G, a, b, \alpha)] + H(q)</script> <br />
+<script type="math/tex">= \mathbb{E}_q [\log\ P(z' \mid  z_a, G, \nu, \Theta, a, b, \alpha)]</script> <br />
+<script type="math/tex">+ \mathbb{E}_q [\log\ P(z_a \mid  G, \nu, \Theta, a,b,\alpha)]</script> <br />
+<script type="math/tex">+ \mathbb{E}_q [\log\ P(\nu \mid  a,b)]</script> <br />
+<script type="math/tex">+ \mathbb{E}_q [\log\ P(\Theta\mid \alpha)] + H(q)</script> <br /></p>
+
+<p>If we can assume that the data contains only strings that can be parsed by the grammar, we do not need to consider G as a parameter, since the rules for producing and for parsing strings are the same. We also know from the definition of our model which
+hidden variables depend on which model parameters: <script type="math/tex">\Theta</script> depends only
+on <script type="math/tex">\alpha</script> since each <script type="math/tex">\Theta_A \sim Dir(\alpha_A)</script>. <script type="math/tex">\nu</script> depends on
+<script type="math/tex">a = \{a,b\}</script> (<script type="math/tex">\nu_a \sim Beta(a_A,b_A)</script>), the adapted nonterminal subtrees
+<script type="math/tex">z_A</script> depend on both <script type="math/tex">\Theta</script> and <script type="math/tex">\nu</script> and the full tree derivation
+depends on <script type="math/tex">\nu</script>. We can use this information to rewrite the equation
+more accurately:</p>
+
+<p><script type="math/tex">\mathbb{E}_q [\log\ P(Z\mid G, a, b, \alpha)] + H(q)</script> <br />
+<script type="math/tex">= \mathbb{E}_q [\log\ P(z' \mid  \nu)]</script> <br />
+<script type="math/tex">+ \mathbb{E}_q [\log\ P(z_a \mid   \nu, \Theta )]</script> <br />
+<script type="math/tex">+ \mathbb{E}_q [\log\ P(\nu \mid  a,b)]</script> <br />
+<script type="math/tex">+ \mathbb{E}_q [\log\ P(\Theta\mid \alpha)]  + H(q)</script> <br /></p>
+
+<p>Finally, we know from our definition of
+<script type="math/tex">\Theta,\ \nu,\ z_A,</script> and <script type="math/tex">z</script> in §1.1 that we can decompose them into
+their subscripted constituents. This gives us:</p>
+
+<p><script type="math/tex">= \sum\limits_{A\in\mathcal{M}}( \mathcal{H}(q) + \mathbb{E}_q[\log\ p(x, \Theta \mid  \alpha)]</script><br />
+<script type="math/tex">+ \mathbb{E}_q[\log\ p(x, \nu \mid  a) ]</script><br />
+<script type="math/tex">+ \mathbb{E}_q[\log\ p(x, z_A \mid  \nu, \Theta)]</script><br />
+<script type="math/tex">+ \mathbb{E}_q[\log\ p(x, z' \mid  \nu)] )</script><br /></p>
+
+<p><script type="math/tex">= \mathcal{H}(q) + \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, \Theta \mid  \alpha)]</script><br />
+<script type="math/tex">+ \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, \nu \mid  a) ]</script><br />
+<script type="math/tex">+ \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, z_A \mid  \nu, \Theta)]</script><br />
+<script type="math/tex">+ \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, z' \mid  \nu)]</script><br /></p>
+
+<h1 id="deriving-variational-updates">Deriving Variational Updates</h1>
+
+<h2 id="the-coordinate-ascent-algorithm">The Coordinate Ascent Algorithm</h2>
+
+<p>The lower bound that we’ve derived above is a good start, but it means nothing if we cannot use it to converge on a solution. All it tells us right now is that given a certain variational distribution <script type="math/tex">q(Z)</script> we can compute the lower bound on the log marginal likelihood. If we were incredibly lucky, we might guess this distribution on the first try and be done, but barring this astronomically unlikely event, we will need to update our variational distribution in some iterative manner.</p>
+
+<h2 id="mean-field-approximation">Mean Field Approximation</h2>
+<p>The first problem with finding <script type="math/tex">q</script> is that it is a distribution over all latent variables <script type="math/tex">Z</script>. Since it is often the strong conditional relationships between latent variables that make inference intractable, we need to find a way to simplify the problem. Intuitively, <script type="math/tex">q</script> is an approximation (recall that L(q) is a lower bound, not an equality relation). Since we plan on improving <script type="math/tex">q</script> through updates, it turns out we can get away with breaking these interdependencies and proposing a variational distribution <script type="math/tex">q_i(z_i)</script> for all <script type="math/tex">z_i \in Z</script>. Since we treat each variational distribution over a latent variable as independent, we get</p>
+
+<script type="math/tex; mode=display">q(Z) = \prod\limits_{i} q_i(z_i)</script>
+
+<p>This is a very powerful assumption, because it allows us to optimize each variational distribution iteratively. That is to say, while holding all other variational distributions constant, we will find the variational parameters for <script type="math/tex">q_i(z_i)</script> that maximize the marginal likelihood. Recall that our bound on the log marginal likelihood was:</p>
+
+<script type="math/tex; mode=display">L(q) \geq \sum\limits_{z_i \in Z} q(Z) \log\ p(X,Z|\Phi) + H(q)</script>
+
+<p>For the sake of concise notation, let <script type="math/tex">q_j = q_j{Z_j}</script> and let us disregard the conditioner <script type="math/tex">\Phi</script> for now. Let’s replace <script type="math/tex">q(Z)</script> with our approximating product:</p>
+
+<script type="math/tex; mode=display">L(q) \geq \sum\limits_{z_i \in Z} \prod\limits_{i} q_i(z_i) \log\ p(X,Z|\Phi) + H(q)</script>
+
+<p>Choosing any one <script type="math/tex">q_j(z_j)</script> to optimize (remembering also that <script type="math/tex">Z_j</script> can be a subset of <script type="math/tex">Z</script>, not just one element), we can rewrite this as:</p>
+
+<script type="math/tex; mode=display">\sum\limits_{z\in Z_j} (q_j(z) \sum\limits_{z_i \in Z_{-j}} \prod\limits_{i\neq j} q_i \log\ p(X, z) ) - \sum\limits_{z\in Z_j} q_j \log\ q_j + const</script>
+
+<p>where <script type="math/tex">Z_{_j}</script> means all <script type="math/tex">z_i \in Z</script> where <script type="math/tex">i\neq j</script></p>
+
+<p>Let</p>
+
+<script type="math/tex; mode=display">\log\ \tilde{p}(x,z_j) = \mathbb{E}_{-j}[\log\ p(X,Z)] + const</script>
+
+<p>where</p>
+
+<script type="math/tex; mode=display">\mathbb{E}_{-j}[\log\ p(X,Z)] = \sum\limits_{z\in Z_j} \log\ p(X,Z) \prod\limits_{i\neq j} q_i</script>
+
+<p>Then the equation above is the negative KL divergence between <script type="math/tex">q_j(Z_j)</script> and <script type="math/tex">\tilde{p}(X, Z_j)</script>, which we can minimize. Clearly, the minimum value for this will be reached when <script type="math/tex">q_j(Z_j) = \tilde{p}(X, Z_j)</script>. Let <script type="math/tex">q^{*}_j(Z_j)</script> be this optimal solution. Then</p>
+
+<p><script type="math/tex">\log\ q^{*}_j(Z_j) = \mathbb{E}_{-j}[\log\ p(X,Z)] + const</script>
+@bishop2006pattern</p>
+
+<p>Adding back in our conditioner <script type="math/tex">\Phi</script> (the model parameters), the right can be rewritten:
+<br />
+<script type="math/tex">\mathbb{E}_{-j}[\log\ p(X,Z | \Phi)] + const</script><br />
+<script type="math/tex">= \mathbb{E}_{-j}[\log\ p(Z_j, Z_{-j}, X | \Phi)] + const</script><br />
+<script type="math/tex">= \mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j},X,\Phi)p(Z_{-j}|X, \Phi)] + const</script><br />
+<script type="math/tex">= \mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j}, X,\Phi)] +  \mathbb{E}_{-j}[\log\ p(Z_{-j}|X, \Phi)] + const</script><br /></p>
+
+<p>We’re interested in updating <script type="math/tex">q_j(Z_j)</script>, but to do so we need to hold <script type="math/tex">q_{-j}(Z_{-j})</script> constant, so we are going to generalize this formula to say:</p>
+
+<script type="math/tex; mode=display">q^*_j(Z_j) \propto \exp\{\mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j}, X,\Phi)]\}</script>
+
 
 
 
