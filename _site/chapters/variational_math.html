@@ -332,7 +332,8 @@ their subscripted constituents. This gives us:</p>
 
 <p>Choosing any one <script type="math/tex">q_j(z_j)</script> to optimize (remembering also that <script type="math/tex">Z_j</script> can be a subset of <script type="math/tex">Z</script>, not just one element), we can rewrite this as:</p>
 
-<script type="math/tex; mode=display">\sum\limits_{z\in Z_j} (q_j(z) \sum\limits_{z_i \in Z_{-j}} \prod\limits_{i\neq j} q_i \log\ p(X, z) ) - \sum\limits_{z\in Z_j} q_j \log\ q_j + const</script>
+<p><span style="color:red">Question 1: I was unable to actually figure out how Bishop derives this from the previous equation </span>
+<script type="math/tex">\sum\limits_{z\in Z_j} (q_j(z) \sum\limits_{z_i \in Z_{-j}} \prod\limits_{i\neq j} q_i \log\ p(X, z) ) - \sum\limits_{z\in Z_j} q_j \log\ q_j + const</script></p>
 
 <p>where <script type="math/tex">Z_{_j}</script> means all <script type="math/tex">z_i \in Z</script> where <script type="math/tex">i\neq j</script></p>
 
@@ -356,9 +357,15 @@ their subscripted constituents. This gives us:</p>
 <script type="math/tex">= \mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j},X,\Phi)p(Z_{-j}|X, \Phi)] + const</script><br />
 <script type="math/tex">= \mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j}, X,\Phi)] +  \mathbb{E}_{-j}[\log\ p(Z_{-j}|X, \Phi)] + const</script><br /></p>
 
+<p><span style="color:red">Question 2: is this the reason why we do this? Bishop uses equality and the second expectation (<script type="math/tex">\mathbb{E}_{-j}[\log\ p(Z_{-j}|X, \Phi)]</script>) but the other papers (Blei, Cohen) use proportionality and drop the second expectation </span></p>
+
 <p>We’re interested in updating <script type="math/tex">q_j(Z_j)</script>, but to do so we need to hold <script type="math/tex">q_{-j}(Z_{-j})</script> constant, so we are going to generalize this formula to say:</p>
 
 <script type="math/tex; mode=display">q^*_j(Z_j) \propto \exp\{\mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j}, X,\Phi)]\}</script>
+
+<p>The pseudocode for the Coordinate Ascent Variational Inference algorithm (CAVI) helps illustrate this process:</p>
+
+<p><img src="images/Variational/CAVI.png" height="250" /></p>
 
 
 

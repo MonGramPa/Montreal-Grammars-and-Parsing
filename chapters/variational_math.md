@@ -277,6 +277,7 @@ $$L(q) \geq \sum\limits_{z_i \in Z} \prod\limits_{i} q_i(z_i) \log\ p(X,Z|\Phi) 
 
 Choosing any one $$q_j(z_j)$$ to optimize (remembering also that $$Z_j$$ can be a subset of $$Z$$, not just one element), we can rewrite this as:
 
+<span style="color:red">Question 1: I was unable to actually figure out how Bishop derives this from the previous equation </span>
 $$\sum\limits_{z\in Z_j} (q_j(z) \sum\limits_{z_i \in Z_{-j}} \prod\limits_{i\neq j} q_i \log\ p(X, z) ) - \sum\limits_{z\in Z_j} q_j \log\ q_j + const$$ 
 
 where $$Z_{_j}$$ means all $$z_i \in Z$$ where $$ i\neq j$$
@@ -302,9 +303,17 @@ $$= \mathbb{E}_{-j}[\log\ p(Z_j, Z_{-j}, X | \Phi)] + const$$<br/>
 $$ = \mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j},X,\Phi)p(Z_{-j}|X, \Phi)] + const$$<br/>
 $$ = \mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j}, X,\Phi)] +  \mathbb{E}_{-j}[\log\ p(Z_{-j}|X, \Phi)] + const$$<br/>
 
+
+<span style="color:red">Question 2: is this the reason why we do this? Bishop uses equality and the second expectation ($$\mathbb{E}_{-j}[\log\ p(Z_{-j}|X, \Phi)]$$) but the other papers (Blei, Cohen) use proportionality and drop the second expectation </span>
+
 We're interested in updating $$q_j(Z_j)$$, but to do so we need to hold $$q_{-j}(Z_{-j})$$ constant, so we are going to generalize this formula to say:
 
 $$ q^*_j(Z_j) \propto \exp\{\mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j}, X,\Phi)]\}$$
+
+The pseudocode for the Coordinate Ascent Variational Inference algorithm (CAVI) helps illustrate this process:
+
+<img src='images/Variational/CAVI.png' height='250'>
+
 
 
 
