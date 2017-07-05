@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title></title>
+    <title>Notes on Daniel's parser</title>
 
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
@@ -58,30 +58,92 @@
 
     <div class="container">
 
-      <div class="highlighter-rouge"><pre class="highlight"><code>                   __
-                  /\ \                                                         __
- __  __    ___    \_\ \     __   _ __   ____    ___    ___   _ __    __       /\_\    ____
-/\ \/\ \ /' _ `\  /'_  \  /'__`\/\  __\/ ,__\  / ___\ / __`\/\  __\/'__`\     \/\ \  /',__\
-\ \ \_\ \/\ \/\ \/\ \ \ \/\  __/\ \ \//\__, `\/\ \__//\ \ \ \ \ \//\  __/  __  \ \ \/\__, `\
- \ \____/\ \_\ \_\ \___,_\ \____\\ \_\\/\____/\ \____\ \____/\ \_\\ \____\/\_\ _\ \ \/\____/
-  \/___/  \/_/\/_/\/__,_ /\/____/ \/_/ \/___/  \/____/\/___/  \/_/ \/____/\/_//\ \_\ \/___/
-                                                                              \ \____/
-                                                                               \/___/
-</code></pre>
+      <div class="page-header">
+  <h1>Notes on Daniel's parser</h1>
 </div>
 
-<p>Underscore.js is a utility-belt library for JavaScript that provides
-support for the usual functional suspects (each, map, reduce, filter…)
-without extending any core JavaScript objects.</p>
+<h1 id="data-structures-in-daniels-parser">Data structures in Daniel’s parser</h1>
+<p>Some notes taken last May. Eva P. 06/2017</p>
 
-<p>For Docs, License, Tests, and pre-packed downloads, see:
-http://underscorejs.org</p>
+<h3 id="recursive-type-structures">Recursive type structures</h3>
 
-<p>Underscore is an open-sourced component of DocumentCloud:
-https://github.com/documentcloud</p>
+<script type="math/tex; mode=display">constituent \rightarrow  completion \rightarrow edge \rightarrow traversal \rightarrow constituent</script>
 
-<p>Many thanks to our contributors:
-https://github.com/jashkenas/underscore/contributors</p>
+<ul>
+  <li>constituent *
+    <ul>
+      <li>start/end</li>
+      <li>list of completions</li>
+    </ul>
+  </li>
+  <li>completion (2 types : Terminal and non-terminal)
+    <ul>
+      <li>edge</li>
+      <li>rule (from Grammar)</li>
+    </ul>
+  </li>
+  <li>edge *
+    <ul>
+      <li>start/end</li>
+      <li>list of traversals</li>
+    </ul>
+  </li>
+  <li>traversal
+    <ul>
+      <li>previous edges</li>
+      <li>constituent</li>
+    </ul>
+  </li>
+</ul>
+
+<p>* Items: (constituents and edges) The places with choices for different possible trees</p>
+
+<h4 id="probabilities">Probabilities</h4>
+
+<ul>
+  <li>
+    <p>constituent
+<script type="math/tex">P \rightarrow \Sigma P(completions)</script></p>
+  </li>
+  <li>
+    <p>completion
+<script type="math/tex">P \rightarrow \Sigma P(edge) \times P(rule)</script></p>
+  </li>
+  <li>
+    <p>edge
+<script type="math/tex">P \rightarrow \Sigma P(traversals)</script></p>
+  </li>
+  <li>
+    <p>traversal
+<script type="math/tex">P \rightarrow \Sigma P(constituent) \times P(</script> edge it came from <script type="math/tex">)</script></p>
+  </li>
+</ul>
+
+<h3 id="other-structures">Other Structures</h3>
+
+<ul>
+  <li>Logbook
+    <ul>
+      <li>everything discovered</li>
+    </ul>
+  </li>
+  <li>Chart
+    <ul>
+      <li>
+        <script type="math/tex; mode=display">Chart \cap Agenda = \emptyset</script>
+      </li>
+      <li>completed items</li>
+    </ul>
+  </li>
+  <li>Agenda
+    <ul>
+      <li>Before going to chart</li>
+      <li>incomplete items (we don’t know everything about them yet)</li>
+      <li>priority Q</li>
+    </ul>
+  </li>
+</ul>
+
 
 
     </div><!-- /.container -->
