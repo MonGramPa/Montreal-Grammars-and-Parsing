@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Inside-Outside Algorithm</title>
+
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/theme/neat.css">
+    <link rel="stylesheet" href="/assets/css/katex.min.css">
+    <link rel="stylesheet" href="/assets/css/custom.css">
+    <link rel="stylesheet" href="/assets/css/code.css">
+
+    <script src="/assets/js/webchurch.min.js"></script>
+    <script src="/assets/js/katex.min.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/node_modules/codemirror/lib/codemirror.js"></script>
+    <script src="/node_modules/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/assets/js/cm-folding.js"></script>
+    <script src="/assets/js/cm-comments.js"></script>
+    <script src="/assets/js/webppl.min.js"></script>
+    <script src="/bower_components/jquery-autosize/jquery.autosize.min.js"></script>
+    <script src="/bower_components/d3/d3.min.js"></script>
+    <script src="/bower_components/vega/vega.min.js"></script>
+    <!-- <script src="https://probmods.org/webchurch/online/vega.min.js"></script> -->
+    <script src="/bower_components/underscore/underscore.js"></script>
+    <script src="/bower_components/react/JSXTransformer.js"></script>
+    <script src="/bower_components/react/react-with-addons.min.js"></script>
+    <script src="/bower_components/showdown/compressed/showdown.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <script type="text/jsx" src="/assets/js/editor.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Montreal Grammars and Parsing Project</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right collapse navbar-collapse">
+            <li><a href="/editor.html">Editor</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="container">
+
+      <div class="page-header">
+  <h1>Inside-Outside Algorithm</h1>
+</div>
+
+<h4 id="manning-christopher-and-hinrich-schütze-1999-foundations-of-statistical-natural-language-processing-mit-press">Manning, Christopher and Hinrich Schütze (1999). <em>Foundations of Statistical Natural Language Processing</em>. MIT Press.</h4>
+
+<h4 id="notes-by-chris-bruno-may-28-2017">Notes by Chris Bruno, May 28, 2017</h4>
+
+<h2 id="background">Background</h2>
+
+<p><strong>Definition.</strong> A PCFG is a 5-tuple <script type="math/tex">(\mathbf{W}, \mathbf{N}, \mathbf{R}, S, P)</script> where</p>
+<ul>
+  <li><script type="math/tex">\mathbf{W} = \{w^1, \ldots, w^k\}</script> is a set of terminals.</li>
+  <li><script type="math/tex">\mathbf{N} = \{N^1, \ldots, N^n\}</script> is a set of non-terminals.</li>
+  <li><script type="math/tex">\mathbf{R} = \{A \to (\mathbf{W} \cup \mathbf{N})^* : A \in \mathbf{N}\}</script> is a set of rules.</li>
+  <li><script type="math/tex">S \in \mathbf{N}</script> is the start symbol.</li>
+  <li><script type="math/tex">P</script> is a set of probabilities such that for each <script type="math/tex">A \in \mathbf{N}</script>, <script type="math/tex">\sum_{A \to \zeta \in \mathbf{R}}P(A \to \zeta) = 1</script>.</li>
+</ul>
+
+<p><strong>Notation.</strong></p>
+<ul>
+  <li>Given a string <script type="math/tex">W \in \mathbf{W}^*</script> of length <script type="math/tex">m</script>, let <script type="math/tex">w_{pq}</script> be the substring from index <script type="math/tex">p</script> to <script type="math/tex">q</script> (so that <script type="math/tex">w_{1m} = W</script>).</li>
+  <li>For any <script type="math/tex">A \in \mathbf{N}</script>, <script type="math/tex">A_{pq}</script> expresses that there is a constituent rooted at <script type="math/tex">A</script> from  index <script type="math/tex">p</script> to <script type="math/tex">q</script>.</li>
+  <li><script type="math/tex">A \Longrightarrow w_{pq}</script> expresses that there is some finite sequence of rules starting with nonterminal <script type="math/tex">A</script> that generates the substring <script type="math/tex">w_{pq}</script>.</li>
+</ul>
+
+<p>A PCFG encodes these three <strong>assumptions</strong>:</p>
+<ol>
+  <li>
+    <p><strong>Place invariance.</strong> The probability of a subtree does not depend on where in the string the words it dominates are:</p>
+
+    <p>For any <script type="math/tex">A \in \mathbf{N}</script> and indices <script type="math/tex">k,c: P(A_{k(k+c)})</script> are the same.</p>
+  </li>
+  <li>
+    <p><strong>Context free.</strong> The probability of a subtree doesn’t depend on words not dominated by the subtree:</p>
+
+    <p>For any <script type="math/tex">A \in \mathbf{N}</script>, indices <script type="math/tex">k, l</script> and any substring <script type="math/tex">s</script> outside <script type="math/tex">w_{kl}: P(A_{kl} \to \zeta \mid s) = P(A_{kl})</script>.</p>
+  </li>
+  <li>
+    <p><strong>Ancestor-free.</strong> The probability of a subtree doesn’t depend on any of its ancestors.</p>
+
+    <p>For any <script type="math/tex">A \in \mathbf{N}</script> and any ancestor node <script type="math/tex">\nu: P(A \to \zeta \mid \nu) = P(A \to \zeta)</script></p>
+  </li>
+</ol>
+
+<p><strong>Three important questions.</strong></p>
+<ol>
+  <li>
+    <p>What is the probability of a sentence <script type="math/tex">w_{1m}</script> given <script type="math/tex">G</script>?</p>
+
+    <p><script type="math/tex">P(w_{1m} \mid G)</script>
+ — (Inside-algorithm)</p>
+  </li>
+  <li>
+    <p>What is the most likely parse for a sentence?</p>
+
+    <p><script type="math/tex">\arg\max_tP(t\mid w_{1m},G)</script>
+ — (modification of the Inside-algorithm)</p>
+  </li>
+  <li>
+    <p>How to choose rule probabilities for a grammar <script type="math/tex">G</script> which maximizes the probability of an untagged corpus <script type="math/tex">W</script>.</p>
+
+    <p><script type="math/tex">\arg\max_GP(W\mid G)</script>
+ — (Inside-outside algoritm)</p>
+  </li>
+</ol>
+
+<p><strong>Chomsky Normal Form.</strong> Assume, for the following algorithms, that our grammars are in CNF: all rules are of one of two forms:</p>
+<ol>
+  <li><script type="math/tex">A \to B C</script> where <script type="math/tex">B, C \in \mathbf{N}</script></li>
+  <li><script type="math/tex">A \to w</script> where <script type="math/tex">w \in \mathbf{W}</script></li>
+</ol>
+
+<p>If <script type="math/tex">G</script> is in CNF then for all <script type="math/tex">A \in \mathbf{N}</script>:
+<script type="math/tex">\displaystyle\sum_{B,C \in \mathbf{N}}P(A \to B C) + \sum_{k=1}^V P(A \to w^k) = 1</script>.</p>
+
+<h2 id="inside-and-outside-probabilities">Inside and outside probabilities</h2>
+
+<p>Given a sentence <script type="math/tex">W = w_{1m}</script>, define:</p>
+
+<p><strong>Outside probabilities.</strong> <script type="math/tex">\alpha_A(p, q) = P(w_{1(p-1)}, A_{pq}, w_{(q+1)m}\mid G)</script></p>
+
+<p>The probability that substring <script type="math/tex">w_{pq}</script> is a constituent with root category <script type="math/tex">A</script>.</p>
+
+<p><strong>Inside probabilities.</strong> <script type="math/tex">\beta_A(p, q) = P(w_{pq} \mid A_{pq}, G)</script></p>
+
+<p>The probability that subtring <script type="math/tex">w_{pq}</script> is generated by some sequence of rules given that its root category is <script type="math/tex">A</script>.</p>
+
+<h2 id="inside-algorithm">Inside algorithm</h2>
+
+<p><strong>Input.</strong> A sentence <script type="math/tex">W = w_{1m}</script> and PCFG <script type="math/tex">G</script> in CNF.</p>
+
+<p><strong>Base case.</strong> For all <script type="math/tex">k, 1 \leq k \leq m: \beta_A(k, k) = P(A \to w_k \mid G)</script></p>
+
+<p><strong>Induction.</strong> Let <script type="math/tex">p \lt q</script> where <script type="math/tex">1 \leq p, q \leq m</script>.</p>
+
+<p>Since <script type="math/tex">G</script> is in CNF, if <script type="math/tex">A</script> spans <script type="math/tex">p,q</script> then <script type="math/tex">A</script> must rewrite to two nonterminals <script type="math/tex">B, C</script>. Then,
+<script type="math/tex">\displaystyle\beta_A(p, q) = \sum_{B,C \in \mathbf{N}}\sum_{d=p}^{q-1}P(A \to B C)\beta_B(p, d)\beta_C(d+1, q)</script></p>
+
+<h2 id="outside-algorithm">Outside algorithm</h2>
+
+<p><strong>Input.</strong> A sentence <script type="math/tex">W = w_{1m}</script> and PCFG <script type="math/tex">G</script> in CNF.</p>
+
+<p><strong>Base case.</strong></p>
+<ul>
+  <li>Let <script type="math/tex">\alpha_A(1, m) = 1</script></li>
+  <li>Let <script type="math/tex">\alpha_X(1, m) = 0</script> for all <script type="math/tex">X \in \mathbf{N}, X \neq A</script></li>
+</ul>
+
+<p><strong>Induction.</strong>  Sum together two possibilities:
+<script type="math/tex">\displaystyle\alpha_A(p, q) =
+\sum_{B, C \in \mathbf{N}; B, C \neq A}\sum_{c=q+1}^m \alpha_C(p,e)P(C \to A B)\beta_B(q+1, e) +
+\sum_{B, C \in \mathbf{N}}\sum_{c=1}^{p-1}\alpha_C(e, q)P(C \to B A)\beta_B(e, p-1)</script></p>
+
+<h2 id="finding-the-most-likely-parse-for-a-sentence">Finding the most likely parse for a sentence</h2>
+
+<p>Alter the Inside algorithm, replacing sums with max.</p>
+
+<p><strong>Input.</strong> A sentence <script type="math/tex">W = w_{1m}</script> and PCFG <script type="math/tex">G</script> in CNF.</p>
+
+<p><strong>Base case.</strong> For all <script type="math/tex">k, 1 \leq k \leq m</script>:
+<script type="math/tex">\displaystyle\delta_A(k, k) = P(A \to w_k \mid G)</script></p>
+
+<p><strong>Induction.</strong> For all <script type="math/tex">A \in \mathbf{N}</script> and for all <script type="math/tex">p,q</script> where <script type="math/tex">1 \leq p, q \leq m</script> and <script type="math/tex">p \lt q</script>:
+<script type="math/tex">\displaystyle\delta_A(p, q) = \max_{B,C \in \mathbf{N}; p \leq d \lt q}P(A \to B C)\delta_A(p, d)\delta_A(d+1, q)</script>
+,<script type="math/tex">\displaystyle\psi_A(p, q) = \arg\max_{B,C \in \mathbf{N}; p \leq d \lt q}P(A \to B C)\psi_A(p, d)\psi_A(d+1, q)</script></p>
+
+<p><strong>Backtrack.</strong> The probability of the most likely parse tree is <script type="math/tex">\delta_S(1, m)</script>. Then expand from top to bottom as follows:</p>
+<ul>
+  <li>Let <script type="math/tex">\nu</script> be a node spanning indices <script type="math/tex">p</script> to <script type="math/tex">q</script> whose root category is <script type="math/tex">A</script>.</li>
+  <li>If <script type="math/tex">p \lt q</script> then <script type="math/tex">\psi_A(p, q) = (B, C, d)</script> and:
+    <ul>
+      <li><script type="math/tex">\text{left}(\nu)</script> has category <script type="math/tex">B</script> and spans <script type="math/tex">(p, d)</script></li>
+      <li><script type="math/tex">\text{right}(\nu)</script> has category <script type="math/tex">C</script> and spans <script type="math/tex">(d+1, q)</script></li>
+      <li>Recurse on both children.</li>
+    </ul>
+  </li>
+  <li>If <script type="math/tex">p = q</script> then <script type="math/tex">A</script> rewrites to <script type="math/tex">w_p</script>.</li>
+</ul>
+
+<h2 id="training-a-pcfg-the-inside-outside-em-algorithm">Training a PCFG: the Inside-Outside EM algorithm</h2>
+
+<h3 id="motivation">Motivation</h3>
+
+<p>We would like to calculate
+<script type="math/tex">\hat{P}(A \to \zeta) = \frac{c(A \to \zeta)}{\sum_\gamma c(A \to \gamma)}</script>
+for all rules <script type="math/tex">A \to \zeta \in \mathbf{N}</script>.</p>
+
+<p>Without a tagged corpus, this cannot be calculated directly.
+We show how to calculate this given a single sentence, then extend it to a corpus of sentences. Assume we are given a sentence <script type="math/tex">W = w_{1m}</script>.</p>
+
+<p>We have <script type="math/tex">\displaystyle P(A \Longrightarrow w_{pq} \mid S \Longrightarrow w_{1m}, G) = \frac{\alpha_A(p,q)\beta_A(p,q)}{\pi}</script>,
+where <script type="math/tex">\pi = P(S \Longrightarrow w_{1m})</script>.</p>
+
+<p>If we sum over all strings, we get the expected number of times <script type="math/tex">A</script>  is used in  the derivation of <script type="math/tex">w_{1m}</script>:
+<script type="math/tex">\displaystyle E(A \text{ is used in } S \Longrightarrow w_{1m}) =
+\sum_{p=1}^m\sum_{q=p}^m \frac{\alpha_A(p,q)\beta_A(p,q)}{\pi}</script></p>
+
+<p>Furthermore, since <script type="math/tex">G</script> is in CNF, we can flesh out two cases of <script type="math/tex">\displaystyle P(A \Longrightarrow w_{pq} \mid S \Longrightarrow w_{1m}, G)</script>.</p>
+<ol>
+  <li>
+    <p>If <script type="math/tex">A</script> expands to two nonterminals <script type="math/tex">B, C</script> then
+<script type="math/tex">\displaystyle P(A \to B C \Longrightarrow w_{pq} \mid S \Longrightarrow w_{1m}, G) =
+\sum_{d=p}^{q-1} \frac{\alpha_A(p,q)P(A \to B C)\beta_B(p, d)\beta_C(d + 1, q)}{\pi}</script></p>
+
+    <p>Then we can sum over all ranges of words that the node <script type="math/tex">A</script> could dominate to get the expected number of times the rule is used</p>
+
+    <script type="math/tex; mode=display">\displaystyle E(A \to B C \text{  is used in } S \Longrightarrow w_{1m}) =
+ \sum_{p=1}^{m-1}\sum_{q=p+1}^m\sum_{d=p}^{q-1} \frac{\alpha_A(p,q)P(A \to B C)\beta_B(p, d)\beta_C(d + 1, q)}{\pi}</script>
+  </li>
+  <li>
+    <p>If <script type="math/tex">A</script> expands to a terminal <script type="math/tex">w^k</script> then
+<script type="math/tex">\displaystyle P(A \to w^k \mid S \Longrightarrow w_{1m}, G) =
+\sum_{h=1}^{m} \frac{\alpha_A(h,h)P(A \to w_h, w_h = w^k) }{\pi}=
+\sum_{h=1}^{m} \frac{\alpha_A(h,h)P(w_h = w^k)\beta_A(h,h) }{\pi}</script></p>
+  </li>
+</ol>
+
+<p>Then we use these three equations to get estimated probabilities of all the rules. There are two cases:</p>
+<ol>
+  <li>
+    <script type="math/tex; mode=display">\hat{P}(A \to B C) = \frac{E(A \to B C \text{  is used in } S \Longrightarrow w_{1m})}{E(A \text{ is used in } S \Longrightarrow w_{1m})}</script>
+  </li>
+  <li>
+    <script type="math/tex; mode=display">\hat{P}(A \to w^k) = \frac{P(A \to w^k \mid S \Longrightarrow w_{1m}, G)}{E(A \text{ is used in } S \Longrightarrow w_{1m})}</script>
+  </li>
+</ol>
+
+<p>Finally, we extend this to an entire corpus. Let <script type="math/tex">W = \langle W^{(1)}, \ldots, W^{(\omega)}\rangle</script> be a corpus of <script type="math/tex">\omega</script> sentences, where each sentence <script type="math/tex">W^{(i)} = w^{(i)}_{1m_i} = w^{(i)}_1\cdots w^{(i)}_{m_i}</script>. Then we sum over all sentences as such:</p>
+<ol>
+  <li>
+    <script type="math/tex; mode=display">\hat{P}(A \to B C) = \frac{\sum_{i=1}^\omega E(A \to B C \text{  is used in } S \Longrightarrow w_{1m})}{\sum_{i=1}^\omega E(A \text{ is used in } S \Longrightarrow w_{1m})}</script>
+  </li>
+  <li>
+    <script type="math/tex; mode=display">\hat{P}(A \to w^k) = \frac{\sum_{i=1}^\omega P(A \to w^k \mid S \Longrightarrow w_{1m}, G)}{\sum_{i=1}^\omega E(A \text{ is used in } S \Longrightarrow w_{1m})}</script>
+  </li>
+</ol>
+
+<p>So the final equations are</p>
+<ol>
+  <li>
+    <script type="math/tex; mode=display">\hat{P}(A \to B C) = \frac{\sum_{i=1}^\omega \sum_{p=1}^{m-1}\sum_{q=p+1}^m\sum_{d=p}^{q-1} \alpha_A(p,q)P(A \to B C)\beta_B(p, d)\beta_C(d + 1, q)}{\sum_{i=1}^\omega \sum_{p=1}^m\sum_{q=p}^m \alpha_A(p,q)\beta_A(p,q)}</script>
+  </li>
+  <li>
+    <script type="math/tex; mode=display">\hat{P}(A \to w^k) = \frac{\sum_{i=1}^\omega \sum_{h=1}^{m} \alpha_A(h,h)P(w_h = w^k)\beta_A(h,h) }{\sum_{i=1}^\omega \sum_{p=1}^m\sum_{q=p}^m \alpha_A(p,q)\beta_A(p,q)}</script>
+  </li>
+</ol>
+
+<h3 id="procedure">Procedure</h3>
+
+<p><strong>Input.</strong> A corpus <script type="math/tex">W</script> and a PCFG <script type="math/tex">G_0</script> whose probabilities have been pre-initialized to some values.</p>
+
+<p><strong>Procedure.</strong> Repeat <script type="math/tex">i = 1, \ldots</script>:</p>
+<ul>
+  <li>Initialize <script type="math/tex">G_i \leftarrow G_{i-1}</script></li>
+  <li>For all rules <script type="math/tex">\rho \in \mathbf{R}</script>:
+    <ul>
+      <li>Compute <script type="math/tex">\hat{P}(\rho)</script></li>
+      <li>Update probabilities of <script type="math/tex">G_i</script> with <script type="math/tex">\hat{P}(\rho)</script></li>
+    </ul>
+  </li>
+</ul>
+
+
+
+    </div><!-- /.container -->
+
+  </body>
+</html>
