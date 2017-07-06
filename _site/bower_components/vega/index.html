@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title></title>
+
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/theme/neat.css">
+    <link rel="stylesheet" href="/assets/css/katex.min.css">
+    <link rel="stylesheet" href="/assets/css/custom.css">
+    <link rel="stylesheet" href="/assets/css/code.css">
+
+    <script src="/assets/js/webchurch.min.js"></script>
+    <script src="/assets/js/katex.min.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/node_modules/codemirror/lib/codemirror.js"></script>
+    <script src="/node_modules/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/assets/js/cm-folding.js"></script>
+    <script src="/assets/js/cm-comments.js"></script>
+    <script src="/assets/js/webppl.min.js"></script>
+    <script src="/bower_components/jquery-autosize/jquery.autosize.min.js"></script>
+    <script src="/bower_components/d3/d3.min.js"></script>
+    <script src="/bower_components/vega/vega.min.js"></script>
+    <!-- <script src="https://probmods.org/webchurch/online/vega.min.js"></script> -->
+    <script src="/bower_components/underscore/underscore.js"></script>
+    <script src="/bower_components/react/JSXTransformer.js"></script>
+    <script src="/bower_components/react/react-with-addons.min.js"></script>
+    <script src="/bower_components/showdown/compressed/showdown.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <script type="text/jsx" src="/assets/js/editor.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Montreal Grammars and Parsing Project</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right collapse navbar-collapse">
+            <li><a href="/editor.html">Editor</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="container">
+
+      <h1 id="vega-a-visualization-grammar">Vega: A Visualization Grammar</h1>
+
+<p><strong>Vega</strong> is a <em>visualization grammar</em>, a declarative format for creating and
+saving visualization designs. With Vega you can describe data visualizations
+in a JSON format, and generate interactive views using either HTML5 Canvas or
+SVG.</p>
+
+<p>To learn more, <a href="https://github.com/trifacta/vega/wiki">visit the wiki</a>.</p>
+
+<h2 id="the-vega-runtime">The Vega Runtime</h2>
+
+<p>This repository contains the <strong>vega-runtime</strong> system, which parses Vega
+specifications to produce interactive visualizations which run in the
+browser using a scenegraph-based rendering system.</p>
+
+<h3 id="running-test-examples">Running Test Examples</h3>
+
+<p>To run the example tests, you will need to run a local web server. For 
+example, if you have Python installed on your system, run <code class="highlighter-rouge">python -m 
+SimpleHTTPServer 8000</code> in the top-level directory of this repository and then 
+point your browser to 
+<a href="http://localhost:8000/examples/">http://localhost:8000/examples/</a>.</p>
+
+<h3 id="build-process">Build Process</h3>
+
+<p>To build the vega-runtime system, run the makefile (<code class="highlighter-rouge">make</code>) within the top 
+directory. Running the build process is only necessary if you want to modify 
+the source code and rebuild vega.js.</p>
+
+<p>The JavaScript build process depends on supporting node.js modules. First, 
+make sure you have node.js and npm (Node Package Manager) installed and 
+accessible from the command line. Run <code class="highlighter-rouge">make install</code> to install these modules 
+into a local node_modules folder. The make install command will create the 
+node_modules folder if it does not exist.</p>
+
+<h2 id="vega-server-side-and-command-line-tools">Vega Server-Side and Command Line Tools</h2>
+
+<p>Vega can also be run server-side using node.js. When running in “headless”
+mode, Vega can be used to render specifications directly to PNG or SVG. In
+addition to the summary below, <a href="https://github.com/trifacta/vega/wiki/Headless-Mode">see the Headless Mode wiki
+documentation</a> for more
+information.</p>
+
+<h3 id="command-line-tools">Command Line Tools</h3>
+
+<p>Vega includes two command line tools for converting Vega JSON specifications
+to rendered PNG or SVG:</p>
+
+<ul>
+  <li><strong>vg2png</strong>: <code class="highlighter-rouge">vg2png [-b basedir] vega_json_file [output_png_file]</code></li>
+  <li><strong>vg2svg</strong>: <code class="highlighter-rouge">vg2svg [-b basedir] [-h] vega_json_file [output_svg_file]</code></li>
+</ul>
+
+<p>Within the Vega project directories, you can invoke these utilities using
+<code class="highlighter-rouge">./bin/vg2png</code> or <code class="highlighter-rouge">./bin/vg2svg</code>. If you import Vega using npm, these commands
+are accessible either locally (<code class="highlighter-rouge">node_modules/.bin/vg2png</code>) or globally
+(<code class="highlighter-rouge">vg2png</code>) depending on how you install the Vega package.</p>
+
+<h3 id="using-vega-in-nodejs-projects">Using Vega in node.js Projects</h3>
+
+<p>To include Vega in a node project, first install it from the command line
+using npm (<code class="highlighter-rouge">npm install vega</code>) or by including <code class="highlighter-rouge">"vega"</code> (version 1.2.0 or
+higher) among the dependencies in your package.json file. Then include Vega in
+your node.js JavaScript code using <code class="highlighter-rouge">require("vega")</code>.</p>
+
+<p>When running in node.js, Vega can use a “headless” rendering mode for
+generating visualizations outside the browser. Internally, Vega uses a custom
+view class (<code class="highlighter-rouge">vg.headless.View</code>) for headless rendering. However, most
+applications can simply use the convenience method <code class="highlighter-rouge">vg.headless.render</code>.</p>
+
+
+    </div><!-- /.container -->
+
+  </body>
+</html>
