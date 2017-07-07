@@ -2,6 +2,7 @@
 layout: section
 title: Deriving mean-field distributions
 index: 2
+use_math: true
 bibliography:
 - 'variational.bib'
 ---

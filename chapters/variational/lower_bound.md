@@ -2,6 +2,7 @@
 layout: section
 title: Deriving a lower bound
 index: 1
+use_math: true
 bibliography:
 - 'variational.bib'
 ---
@@ -39,7 +40,7 @@ denominator. Often, a sampling approach is used. However, sampling can
 be very slow to converge and is not easily parallelizable across
 multiple cores. The variational Bayesian approach, on the other hand,
 treats the problem of finding an appropriate marginal distribution as an
-optimization problem (this will be explained in more detail). 
+optimization problem \(this will be explained in more detail\). 
 
  
 -   Let $$Z$$ be our set of hidden variable collections: 

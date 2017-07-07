@@ -2,6 +2,7 @@
 layout: chapter
 title: Variational Math Derivation
 index: 0
+use_math: true
 bibliography:
 - 'variational.bib'
 ---
