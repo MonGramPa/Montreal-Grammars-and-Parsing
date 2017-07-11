@@ -18,7 +18,7 @@ title: Notes for question on GM1 probabilities
 
 ### Problems
 Merge is always defined as taking 2 chains which rewrite to one chain
-Lets assume that a chain always contains only 1 item (p,q): $$\lambda$$ (e.i. k,l = 0),
+Lets assume that a chain always contains only 1 item (p,q): $$\gamma$$ (e.i. k,l = 0),
 then we can easily translate merge-1 and merge-2 into Chomsky normal form C -> AB
 as we talk about during our last meeting, making the calculation of inside probability straight forward.
 
