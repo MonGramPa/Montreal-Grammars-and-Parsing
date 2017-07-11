@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Montreal Grammars and Parsing Project</title>
+    <title>Notes for question on GM1 probabilities</title>
 
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
@@ -58,55 +58,36 @@
 
     <div class="container">
 
-      <div class="main">
-  <h1>Montreal Grammars and Parsing Project</h1>
-  <span class="authors">Timothy J. O'Donnell, Chris Bruno, Daniel Harasim, Emily Kellison-Linn, Eva Portelance, and Elias Stengel-Eskin</span>
+      <div class="page-header">
+  <h1>Notes for question on GM1 probabilities</h1>
 </div>
 
-<h3 id="chapters">Chapters</h3>
+<p><strong>The deductive system.</strong></p>
 
 <ul>
+  <li><strong>Axioms.</strong> For every <script type="math/tex">\lambda \in Lex</script> where <script type="math/tex">\lambda</script>’s syntactic features are <script type="math/tex">\gamma \in Cat^*</script> and <script type="math/tex">\lambda</script>’s phonetic features cover <script type="math/tex">w_{i+1}\cdots w_{j}</script> of <script type="math/tex">w</script>, let the following be an axiom: <script type="math/tex">[(i,j): \gamma ]</script> .</li>
+  <li><strong>Goals.</strong> <script type="math/tex">[(0, n):</script><code class="highlighter-rouge">c</code><script type="math/tex">], [(0, n):</script><code class="highlighter-rouge">c</code><script type="math/tex">]</script></li>
   <li>
-    <p><a href="/chapters/HarasimParser-DataStruct.html">Notes on Daniel’s parser</a><br />
-  <em>Data structures in Parser</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/Stabler_2010_notes.html">Notes on Stabler (2010)</a><br />
-  <em>MG variants</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/harkema-diss-3.2.html">Notes on Harkema (2001:§3.2)</a><br />
-  <em>Multiple Context-Free Grammars</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/harkema-diss-4.html">Notes on Harkema (2001:§4)</a><br />
-  <em>Parsing Minimalist Languages bottom-up</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/inside-outside.html">Inside-Outside Algorithm</a><br />
-  <em>Manning and Schutze (1999:ch.11)</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/probabilities-MG1.html">Notes for question on GM1 probabilities</a><br />
-  <em></em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/stabler13-chps9-10.html">Notes on Stabler (2013:chps.9-10)</a><br />
-  <em>MGs, MCFGs, derivations, and derivation trees</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/variational/variational_index.html">Variational Math Derivation</a><br />
-  <em></em></p>
+    <p><strong>Rules.</strong> Let <script type="math/tex">0 \leq p, q, v, w \leq n; 0 \leq i, k, l \leq m; t, t_1, t_2 \in \{s,  c\}</script>.</p>
 
-    <ul>
-      <li>
-        <p><a href="/chapters/variational/lower_bound.html">Deriving a lower bound</a><br /></p>
-      </li>
-      <li>
-        <p><a href="/chapters/variational/deriving_q.html">Deriving mean-field distributions</a><br /></p>
-      </li>
-    </ul>
+    <p><img src="images/harkema-diss/rules1.png" width="450" /></p>
+
+    <p><img src="images/harkema-diss/rules2.png" width="450" /></p>
   </li>
+</ul>
+
+<p>Problems
+Merge is always defined as taking 2 chains which rewrite to one chain
+Lets assume that a chain always contains only 1 item (p,q): \delta (e.i. k,l = 0),
+then we can easily translate merge-1 and merge-2 into Chomsky normal form C -&gt; AB
+as we talk about during our last meeting, making the calculation of inside probability straight forward.</p>
+
+<script type="math/tex; mode=display">\displaystyle\beta_A(p, q) = \sum_{B,C \in \mathbf{N}}\sum_{d=p}^{q-1}P(A \to B C)\beta_B(p, d)\beta_C(d+1, q)</script>
+
+<p>But in the case of merge-3, the rule takes to chains and rewrites to a chain of length +1, so given two simple chains, we now have a complex one. This is where it gets confusing.</p>
+<ul>
+  <li>say the probability is on the item, then the rule is not in Chomsky normal form for the sake of inside probabilities because nothing really merged, we now are just accounting for two separate subtrees in a chain.</li>
+  <li>so instead, say the probability is actually that of the chain (let a chain be an item, not just the single subtree) so that the rules have the form C -&gt; AB. Then my issue is understanding how to translate our formula for inside probabilities to an object that is not in a defined order.</li>
 </ul>
 
 

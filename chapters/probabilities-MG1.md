@@ -1,3 +1,9 @@
+---
+layout: chapter
+title: Notes for question on GM1 probabilities
+
+---
+
 
 **The deductive system.**
 
