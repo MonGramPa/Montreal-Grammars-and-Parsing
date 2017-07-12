@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Notes for question on GM1 probabilities</title>
+    <title>Notes on probabilistic MG parser</title>
 
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
@@ -59,35 +59,56 @@
     <div class="container">
 
       <div class="page-header">
-  <h1>Notes for question on GM1 probabilities</h1>
+  <h1>Notes on probabilistic MG parser</h1>
 </div>
 
-<p><strong>The deductive system.</strong></p>
+<h2 id="probabilities-and-mg-parser">Probabilities and MG parser</h2>
+<p>by Eva P. July 12, 2017 with parts taken from <em>Notes on Harkema (2001:§4)</em></p>
+
+<p>This is a modified version of Harkema (2001:§4)’s Bottom-Up parser, which allows for selector features to indicate direction of merge with selectee AND incorporates inside probabilities for each step of a derivation.</p>
+
+<h2 id="modified-gm1">Modified GM1</h2>
 
 <ul>
-  <li><strong>Axioms.</strong> For every <script type="math/tex">\lambda \in Lex</script> where <script type="math/tex">\lambda</script>’s syntactic features are <script type="math/tex">\gamma \in Cat^*</script> and <script type="math/tex">\lambda</script>’s phonetic features cover <script type="math/tex">w_{i+1}\cdots w_{j}</script> of <script type="math/tex">w</script>, let the following be an axiom: <script type="math/tex">[(i,j): \gamma ]</script> .</li>
+  <li><strong>Axioms.</strong> For every <script type="math/tex">\lambda \in Lex</script> where <script type="math/tex">\lambda</script>’s syntactic features are <script type="math/tex">\gamma,\delta \in Cat^*</script> and <script type="math/tex">\lambda</script>’s phonetic features cover <script type="math/tex">w_{i+1}\cdots w_{j}</script> of <script type="math/tex">w</script>, let the following be an axiom: <script type="math/tex">[(i,j): \gamma ]</script> .</li>
   <li><strong>Goals.</strong> <script type="math/tex">[(0, n):</script><code class="highlighter-rouge">c</code><script type="math/tex">], [(0, n):</script><code class="highlighter-rouge">c</code><script type="math/tex">]</script></li>
-  <li>
-    <p><strong>Rules.</strong> Let <script type="math/tex">0 \leq p, q, v, w \leq n; 0 \leq i, k, l \leq m; t, t_1, t_2 \in \{s,  c\}</script>.</p>
+  <li><strong>Rules.</strong> Let <script type="math/tex">0 \leq i, j, v, w \leq n; 0 \leq k, l \leq n ; 0 \leq p,q \leq 1</script>.
+    <ul>
+      <li>Merge
+        <ul>
+          <li>
+            <p>merge-L (merge non-mover to left)</p>
 
-    <p><img src="images/harkema-diss/rules1.png" width="450" /></p>
+            <script type="math/tex; mode=display">\frac{([(i,j):=x^{L}\gamma, \alpha_1,\ldots,\alpha_k],p) ([(j,v):x,\tau_1,\ldots,\tau_l],q)}{([(i,w):\gamma, \alpha_1,\ldots,\alpha_k,\tau_1,\ldots,\tau_l],r+=P(merge-L)\cdot p \cdot q)}</script>
+          </li>
+          <li>
+            <p>merge-R (merge non-mover to right)</p>
 
-    <p><img src="images/harkema-diss/rules2.png" width="450" /></p>
+            <script type="math/tex; mode=display">\frac{([(i,j):=x^{R}\gamma, \alpha_1,\ldots,\alpha_k],p) ([(v,i):x,\tau_1,\ldots,\tau_l],q)}{([(v,j):\gamma, \alpha_1,\ldots,\alpha_k,\tau_1,\ldots,\tau_l],r+=P(merge-R)\cdot p \cdot q)}</script>
+          </li>
+          <li>
+            <p>merge-m (merge mover)</p>
+
+            <script type="math/tex; mode=display">\frac{([(i,j):=x^{L/R}\gamma, \alpha_1,\ldots,\alpha_k],p) ([(v,w):x\delta,\tau_1,\ldots,\tau_l],q)}{([(i,j):\gamma, \alpha_1,\ldots,\alpha_k,(v,w):\delta,\tau_1,\ldots,\tau_l],r+=P(merge-m)\cdot p \cdot q)}</script>
+          </li>
+        </ul>
+      </li>
+      <li>Move (in progress)
+        <ul>
+          <li>
+            <p>move-1 (move to final landing position)</p>
+
+            <script type="math/tex; mode=display">\frac{(([(i,j):+y\gamma,\alpha_1,\ldots,\alpha_k,(v,i):-y,\tau_1,\ldots,\tau_l],r)}{([(v,j):\gamma,\alpha_1,\ldots,\alpha_k,\tau_1,\ldots,\tau_l],r+= P(move-1) \cdot r)}</script>
+          </li>
+          <li>
+            <p>move-2 (mover with multiple Licensee features)</p>
+
+            <script type="math/tex; mode=display">\frac{(([(i,j):+y\gamma,\alpha_1,\ldots,\alpha_k,(v,w):-y\delta,\tau_1,\ldots,\tau_l],r)}{([(i,j):\gamma,\alpha_1,\ldots,\alpha_k,(v,w):\delta,\tau_1,\ldots,\tau_l],r+= P(move-1) \cdot r)}</script>
+          </li>
+        </ul>
+      </li>
+    </ul>
   </li>
-</ul>
-
-<h3 id="problems">Problems</h3>
-<p>Merge is always defined as taking 2 chains which rewrite to one chain
-Lets assume that a chain always contains only 1 item (p,q): <script type="math/tex">\gamma</script> (e.i. k,l = 0),
-then we can easily translate merge-1 and merge-2 into Chomsky normal form C -&gt; AB
-as we talk about during our last meeting, making the calculation of inside probability straight forward.</p>
-
-<script type="math/tex; mode=display">\displaystyle\beta_A(p, q) = \sum_{B,C \in \mathbf{N}}\sum_{d=p}^{q-1}P(A \to B C)\beta_B(p, d)\beta_C(d+1, q)</script>
-
-<p>But in the case of merge-3, the rule takes to chains and rewrites to a chain of length +1, so given two simple chains, we now have a complex one. This is where it gets confusing.</p>
-<ul>
-  <li>say the probability is on the item, then the rule is not in Chomsky normal form for the sake of inside probabilities because nothing really merged, we now are just accounting for two separate subtrees in a chain.</li>
-  <li>so instead, say the probability is actually that of the chain (let a chain be an item, not just the single subtree) so that the rules have the form C -&gt; AB. Then my issue is understanding how to translate our formula for inside probabilities to an object that is not in a defined order.</li>
 </ul>
 
 
