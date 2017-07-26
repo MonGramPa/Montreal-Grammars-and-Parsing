@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Notes on probabilistic MG parser</title>
+
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/theme/neat.css">
+    <link rel="stylesheet" href="/assets/css/katex.min.css">
+    <link rel="stylesheet" href="/assets/css/custom.css">
+    <link rel="stylesheet" href="/assets/css/code.css">
+
+    <script src="/assets/js/webchurch.min.js"></script>
+    <script src="/assets/js/katex.min.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/node_modules/codemirror/lib/codemirror.js"></script>
+    <script src="/node_modules/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/assets/js/cm-folding.js"></script>
+    <script src="/assets/js/cm-comments.js"></script>
+    <script src="/assets/js/webppl.min.js"></script>
+    <script src="/bower_components/jquery-autosize/jquery.autosize.min.js"></script>
+    <script src="/bower_components/d3/d3.min.js"></script>
+    <script src="/bower_components/vega/vega.min.js"></script>
+    <!-- <script src="https://probmods.org/webchurch/online/vega.min.js"></script> -->
+    <script src="/bower_components/underscore/underscore.js"></script>
+    <script src="/bower_components/react/JSXTransformer.js"></script>
+    <script src="/bower_components/react/react-with-addons.min.js"></script>
+    <script src="/bower_components/showdown/compressed/showdown.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <script type="text/jsx" src="/assets/js/editor.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Montreal Grammars and Parsing Project</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right collapse navbar-collapse">
+            <li><a href="/editor.html">Editor</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="container">
+
+      <div class="page-header">
+  <h1>Notes on probabilistic MG parser</h1>
+</div>
+
+<h2 id="probabilities-and-mg-parser">Probabilities and MG parser</h2>
+<p>by Eva P. July 12, 2017 with parts taken from <em>Notes on Harkema (2001:§4)</em></p>
+
+<p>This is a modified version of Harkema (2001:§4)’s Bottom-Up parser, which allows for selector features to indicate direction of merge with selectee AND incorporates inside probabilities for each step of a derivation.</p>
+
+<h2 id="modified-gm1">Modified GM1</h2>
+
+<ul>
+  <li><strong>Axioms.</strong> For every <script type="math/tex">\lambda \in Lex</script> where <script type="math/tex">\lambda</script>’s syntactic features are <script type="math/tex">\gamma,\delta \in Cat^*</script> and <script type="math/tex">\lambda</script>’s phonetic features cover <script type="math/tex">w_{i+1}\cdots w_{j}</script> of <script type="math/tex">w</script>, let the following be an axiom: <script type="math/tex">[(i,j): \gamma ]</script> .</li>
+  <li><strong>Goals.</strong> <script type="math/tex">[(0, n):</script><code class="highlighter-rouge">c</code><script type="math/tex">], [(0, n):</script><code class="highlighter-rouge">c</code><script type="math/tex">]</script></li>
+  <li><strong>Rules.</strong> Let <script type="math/tex">0 \leq i, j, v, w \leq n; 0 \leq k, l \leq n ; 0 \leq p,q \leq 1</script>.
+    <ul>
+      <li>Merge
+        <ul>
+          <li>
+            <p>merge-L (merge non-mover to left)</p>
+
+            <script type="math/tex; mode=display">\frac{([(i,j):=x^{L}\gamma, \alpha_1,\ldots,\alpha_k],p) \quad ([(j,v):x,\tau_1,\ldots,\tau_l],q)}{([(i,w):\gamma, \alpha_1,\ldots,\alpha_k,\tau_1,\ldots,\tau_l],r+=P(merge-L)\cdot p \cdot q)}</script>
+          </li>
+          <li>
+            <p>merge-R (merge non-mover to right)</p>
+
+            <script type="math/tex; mode=display">\frac{([(i,j):=x^{R}\gamma, \alpha_1,\ldots,\alpha_k],p) \quad ([(v,i):x,\tau_1,\ldots,\tau_l],q)}{([(v,j):\gamma, \alpha_1,\ldots,\alpha_k,\tau_1,\ldots,\tau_l],r+=P(merge-R)\cdot p \cdot q)}</script>
+          </li>
+          <li>
+            <p>merge-m (merge mover)</p>
+
+            <script type="math/tex; mode=display">\frac{([(i,j):=x^{L/R}\gamma, \alpha_1,\ldots,\alpha_k],p) \quad ([(v,w):x\delta,\tau_1,\ldots,\tau_l],q)}{([(i,j):\gamma, \alpha_1,\ldots,\alpha_k,(v,w):\delta,\tau_1,\ldots,\tau_l],r+=P(merge-m)\cdot p \cdot q)}</script>
+          </li>
+        </ul>
+      </li>
+      <li>Move (in progress)
+        <ul>
+          <li>
+            <p>move-1 (move to final landing position)</p>
+
+            <script type="math/tex; mode=display">\frac{(([(i,j):+y\gamma,\alpha_1,\ldots,\alpha_k,(v,i):-y,\tau_1,\ldots,\tau_l],r)}{([(v,j):\gamma,\alpha_1,\ldots,\alpha_k,\tau_1,\ldots,\tau_l],r+= P(move-1) \cdot r)}</script>
+          </li>
+          <li>
+            <p>move-2 (mover with multiple Licensee features)</p>
+
+            <script type="math/tex; mode=display">\frac{(([(i,j):+y\gamma,\alpha_1,\ldots,\alpha_k,(v,w):-y\delta,\tau_1,\ldots,\tau_l],r)}{([(i,j):\gamma,\alpha_1,\ldots,\alpha_k,(v,w):\delta,\tau_1,\ldots,\tau_l],r+= P(move-1) \cdot r)}</script>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+
+
+    </div><!-- /.container -->
+
+  </body>
+</html>

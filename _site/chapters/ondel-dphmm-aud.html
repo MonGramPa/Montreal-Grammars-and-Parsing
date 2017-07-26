@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Montreal Grammars and Parsing Project</title>
+    <title>DPHMM Model for Acoustic Unit Discovery</title>
 
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
@@ -58,55 +58,41 @@
 
     <div class="container">
 
-      <div class="main">
-  <h1>Montreal Grammars and Parsing Project</h1>
-  <span class="authors">Timothy J. O'Donnell, Chris Bruno, Daniel Harasim, Emily Kellison-Linn, Eva Portelance, and Elias Stengel-Eskin</span>
+      <div class="page-header">
+  <h1>DPHMM Model for Acoustic Unit Discovery</h1>
 </div>
 
-<h3 id="chapters">Chapters</h3>
+<p>Based on the model described in Ondel et al. (2016).</p>
 
-<ul>
-  <li>
-    <p><a href="/chapters/Stabler_2010_notes.html">Notes on Stabler (2010)</a><br />
-  <em>MG variants</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/stabler13-chps9-10.html">Notes on Stabler (2013:chps.9-10)</a><br />
-  <em>MGs, MCFGs, derivations, and derivation trees</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/HarasimParser-DataStruct.html">Notes on Daniel’s parser</a><br />
-  <em>Data structures in Parser</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/harkema-diss-3.2.html">Notes on Harkema (2001:§3.2)</a><br />
-  <em>Multiple Context-Free Grammars</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/harkema-diss-4.html">Notes on Harkema (2001:§4)</a><br />
-  <em>Parsing Minimalist Languages bottom-up</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/inside-outside.html">Inside-Outside Algorithm</a><br />
-  <em>Manning and Schutze (1999:ch.11)</em></p>
-  </li>
-  <li>
-    <p><a href="/chapters/variational/variational_index.html">Variational Math Derivation</a><br />
-  <em></em></p>
+<h2 id="generative-model">Generative Model</h2>
 
-    <ul>
-      <li>
-        <p><a href="/chapters/variational/lower_bound.html">Deriving a lower bound</a><br /></p>
-      </li>
-      <li>
-        <p><a href="/chapters/variational/deriving_q.html">Deriving mean-field distributions</a><br /></p>
-      </li>
-      <li>
-        <p><a href="/chapters/variational/noisy_channel.html">Noisy channel model</a><br /></p>
-      </li>
-    </ul>
+<p>The generative model consists of a Dirichlet distribution prior over hypothetical phone-like units, each of which is modeled by of a Hidden Markov Model over time-states of that phone, with its own set of HMM parameters. Each HMM emission state is modeled by a gaussian mixture model with <script type="math/tex">P</script> components.</p>
+
+<p>The generative model, to generate a sequence of segments of length <script type="math/tex">N</script>, is defined as follows:</p>
+
+<ol>
+  <li>
+    <p>Sample a vector <script type="math/tex">\bm{v} = v_1, v_2, ... v_M</script> of component weights, for some number of components <script type="math/tex">M</script>, from a Beta distribution.<br />
+<script type="math/tex">v_i =</script>Beta<script type="math/tex">(1,\gamma)</script> <br />
+where <script type="math/tex">\gamma</script> is the concentration parameter of the Dirichlet distribution.</p>
   </li>
-</ul>
+  <li>
+    <p>For any individual component <script type="math/tex">i</script>, let <script type="math/tex">\theta_i</script> represent the set of HMM parameters associated with that component’s HMM. (These parameters and their prior distributions are described in more detail below.) Sample <script type="math/tex">\theta_1,...\theta_M</script> from the HMM parameter distributions.</p>
+  </li>
+  <li>
+    <p>For the sequence length <script type="math/tex">N</script>, sample the segment sequence <script type="math/tex">\bm{c}=c_1,...c_N</script> from the Dirichlet distribution, <script type="math/tex">c_i \sim \bm{\pi}</script>.</p>
+  </li>
+  <li>
+    <p>For each <script type="math/tex">c_i</script>, sample a state path <script type="math/tex">\bm{s_i}=s_{i,1},...s_{i,n}</script> using the corresponding HMM parameters <script type="math/tex">\theta_i</script></p>
+  </li>
+  <li>
+    <p>For each state <script type="math/tex">s_{i,j}</script>, sample a Gaussian component <script type="math/tex">m_{i,j}</script> from the mixture model.</p>
+  </li>
+  <li>
+    <p>For each state <script type="math/tex">s_{i,j}</script>, sample an emitted data point from <script type="math/tex">m_{i,j}</script>.</p>
+  </li>
+</ol>
+
 
 
 
