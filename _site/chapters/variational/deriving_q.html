@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Deriving mean-field distributions</title>
+
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/theme/neat.css">
+    <link rel="stylesheet" href="/assets/css/katex.min.css">
+    <link rel="stylesheet" href="/assets/css/custom.css">
+    <link rel="stylesheet" href="/assets/css/code.css">
+
+    <script src="/assets/js/webchurch.min.js"></script>
+    <script src="/assets/js/katex.min.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/node_modules/codemirror/lib/codemirror.js"></script>
+    <script src="/node_modules/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/assets/js/cm-folding.js"></script>
+    <script src="/assets/js/cm-comments.js"></script>
+    <script src="/assets/js/webppl.min.js"></script>
+    <script src="/bower_components/jquery-autosize/jquery.autosize.min.js"></script>
+    <script src="/bower_components/d3/d3.min.js"></script>
+    <script src="/bower_components/vega/vega.min.js"></script>
+    <!-- <script src="https://probmods.org/webchurch/online/vega.min.js"></script> -->
+    <script src="/bower_components/underscore/underscore.js"></script>
+    <script src="/bower_components/react/JSXTransformer.js"></script>
+    <script src="/bower_components/react/react-with-addons.min.js"></script>
+    <script src="/bower_components/showdown/compressed/showdown.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <script type="text/jsx" src="/assets/js/editor.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Montreal Grammars and Parsing Project</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right collapse navbar-collapse">
+            <li><a href="/editor.html">Editor</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="container">
+
+      <script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<div class="page-header">
+  <h1>Deriving mean-field distributions</h1>
+  
+</div>
+
+<h1 id="deriving-variational-updates">Deriving Variational Updates</h1>
+
+<h2 id="the-coordinate-ascent-algorithm">The Coordinate Ascent Algorithm</h2>
+
+<p>The lower bound that we’ve derived above is a good start, but it means nothing if we cannot use it to converge on a solution. All it tells us right now is that given a certain variational distribution <script type="math/tex">q(Z)</script> we can compute the lower bound on the log marginal likelihood. If we were incredibly lucky, we might guess this distribution on the first try and be done, but barring this astronomically unlikely event, we will need to update our variational distribution in some iterative manner.</p>
+
+<h2 id="mean-field-approximation">Mean Field Approximation</h2>
+<p>The first problem with finding <script type="math/tex">q</script> is that it is a distribution over all latent variables <script type="math/tex">Z</script>. Since it is often the strong conditional relationships between latent variables that make inference intractable, we need to find a way to simplify the problem. Intuitively, <script type="math/tex">q</script> is an approximation (recall that L(q) is a lower bound, not an equality relation). Since we plan on improving <script type="math/tex">q</script> through updates, it turns out we can get away with breaking these interdependencies and proposing a variational distribution <script type="math/tex">q_i(z_i)</script> for all <script type="math/tex">z_i \in Z</script>. Since we treat each variational distribution over a latent variable as independent, we get</p>
+
+<center>
+$$q(Z) = \prod\limits_{i} q_i(z_i)$$
+</center>
+
+<p>This is a very powerful assumption, because it allows us to optimize each variational distribution iteratively. That is to say, while holding all other variational distributions constant, we will find the variational parameters for <script type="math/tex">q_i(z_i)</script> that maximize the marginal likelihood. Recall that our bound on the log marginal likelihood was:</p>
+
+<center>
+$$L(q) \geq \sum\limits_{z_i \in Z} q(Z) \log\ p(X,Z|\Phi) + H(q)$$
+</center>
+
+<p>For the sake of concise notation, let <script type="math/tex">q_j = q_j{Z_j}</script> and let us disregard the conditioner <script type="math/tex">\Phi</script> for now. Let’s replace <script type="math/tex">q(Z)</script> with our approximating product:</p>
+
+<center>
+$$\begin{aligned} L(q) \geq \sum\limits_{z_i \in Z} \left( \prod\limits_{i} q_i(z_i) \right) \log\ p(X,Z|\Phi) + H(q) \\
+L(q) \geq \mathbb{E}_{ \prod\limits_{i} q_i(z_i) } \log\ p(X,Z|\Phi) [\log\ p(X,Z|\Phi)] + H(q)
+\end{aligned}$$
+</center>
+
+<p>Using the chain rule and expanding the entropy term, we can rewrite this expression as</p>
+
+<center>
+$$\begin{aligned} \log\ p(X|\Phi) + \sum\limits_{i=1}^{| Z|} \mathbb{E}_q [\log\ p(z_i | X, z_1,..., z_{i-1}, \Phi)] - \sum\limits_{i=1}^{| Z|} \mathbb{E}_q[\log\ q_{\nu_i}(z_i)] \end{aligned}$$
+</center>
+
+<p>Since <script type="math/tex">p(X \vert Phi)</script> does not depend on the variational parameter <script type="math/tex">\nu_i</script> we can ignore it (recall that this is a lower bound, not an exact equality, so generally <script type="math/tex">X \geq A+B \land A,B \geq 0 \Rightarrow X \geq B \land X \geq A</script>). Since <script type="math/tex">Z</script> is a set, we can reorder its elements any way we wish. If we reorder them each time so that <script type="math/tex">z_i</script> comes last, we can say:</p>
+
+<center>
+$$\begin{aligned} \mathcal{l}_i = \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] - \mathbb{E}_q[\log\ q_{\nu_i}(z_i)]
+\end{aligned}$$
+</center>
+
+<p>Note that for any exponential family distribution <script type="math/tex">q_{\nu_i}</script>,</p>
+
+<center>
+$$q_{\nu_i}(z_i) = h(z_i) \exp \big\{ \nu_i^{T} z_i - a(\nu_i) \big\} $$
+</center>
+
+<p>where <script type="math/tex">a(\nu_i)</script> is the cumulant function, which for the first three derivatives is equivalent to the corresponding derivatives of the moment generating function. We can rewrite our equation using this form for <script type="math/tex">q_{\nu_i}(z_i)</script>:</p>
+
+<center>
+$$\begin{aligned} \mathcal{l}_i = \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] - \mathbb{E}_q\bigg[\log\ \Big( h(z_i) \exp \big\{ \nu_i^{T} z_i - a(\nu_i) \big\} \Big) \bigg] \\
+= \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q\bigg[\log\ \left( h(z_i))\right) + \nu_i^{T} z_i - a(\nu_i) \bigg] \\
+= \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q\big[\log\ \left( h(z_i))\right)\big] - \mathbb{E}_q[\nu_i^T z_i]  + \mathbb{E}_q[a(\nu_i)] \\
+= \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q\big[\log\ \left( h(z_i))\right)\big] - \nu_i^T a'(\nu_i) + a(\nu_i)
+\end{aligned}$$ 
+</center>
+
+<p>Note that <script type="math/tex">\mathbb{E}_q[\nu_i^Tz_i] = \nu_i^T a'(\nu_i)</script> becomes since <script type="math/tex">E_q(\z_i) = a'(\nu_i)</script> and <script type="math/tex">\nu_i^T</script> factors out as a constant when taking the expectation with respect to <script type="math/tex">q</script>. The main premise of variational inference is to cast the intractable calculation of the posterior as an optimization problem. In most optimization problems, there are two general steps: 1) computing an objective function which will allow us to 2) optimize the function by adjusting the parameters. So far, we have an objective function (our lower bound <script type="math/tex">\mathcal{L}(q)</script> on the marginal likelihood). In order to optimize it, we will use some calculus to find the maximum. Setting the first derivative to <script type="math/tex">0</script> and solving allows us to obtain a point where the slope of the function has leveled out. With a strictly convex function, this will be the global maximum. However, in most real-life scenarios, the objective function is not strictly convex. This means that the result could very well be a <strong>local</strong> maximum. Converging on local maxima is one of the risks run when using variational inference.</p>
+
+<p>In the general case, taking the derivative of the objective function can be costly, especially since it must be done every time we want to update our parameters and for every parameter in the factorized representation of the variational distribution. However, using exponential family random variables will allow us to leverage some convenient mathematical facts and avoid this computation.</p>
+
+<p>We are trying to optimize the function by adjusting the variational parameters, so we take the partial derivative of our function with respect to <script type="math/tex">\nu_i</script>:</p>
+
+<center>
+$$\begin{aligned}
+\frac{\delta}{\delta \nu_i} \mathcal{l}_i = \frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q\big[\log\ \left( h(z_i))\right)\big] - \nu_i^T a'(\nu_i) + a(\nu_i) \right) \\
+= \frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q[\log\ h(z_i))] \right) - \left(\nu_i^Ta''(\nu_i)  + a''(\nu_i)\right) + a''(\nu_i) \\
+= \frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q[\log\ h(z_i))] \right) - \nu_i^Ta''(\nu_i)
+\end{aligned}$$
+</center>
+
+<p>Setting this to <script type="math/tex">0</script> we get:</p>
+
+<center>
+$$\begin{aligned}
+0 = \frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q[\log\ h(z_i))] \right) - \nu_i^Ta''(\nu_i) \\
+\nu_i^Ta''(\nu_i) = \frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q[\log\ h(z_i))] \right)\\
+\nu_i =  \left( \frac{\delta}{\delta \nu_i} \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \frac{\delta}{\delta \nu_i} \mathbb{E}_q[\log\ h(z_i))] \right) \left(a''(\nu_i)\right)^{-1}
+\end{aligned}$$
+</center>
+
+<p>Recall that for this to work, <script type="math/tex">q</script> must be in the exponential family. Similarly, if <script type="math/tex">p(z_i\vert Z_{-i}, X, \Phi)</script> is a member of the exponential family, it can be rewritten:</p>
+
+<center>
+$$\begin{aligned}
+p(z_i| Z_{-i}, X, \Phi) = h(z_i) \exp\big\{g_i(Z_{-i}, X, \Phi)^Tz_i - a\left(g_i(Z_{-i}, X, \Phi)\right) \big\}
+\end{aligned}$$
+</center>
+
+<p>where <script type="math/tex">g_i(Z_{-i}, X, \Phi)</script> is the natural parameter of distribution <script type="math/tex">p</script> (for exponential family distributions, this natural parameter has already been defined). Plugging this in for <script type="math/tex">p(z_i\vert Z_{-i}, X, \Phi)</script> (first in the expected value alone, for the sake of readability) and taking the derivative we get:</p>
+
+<center>
+$$\begin{aligned}
+\mathbb{E}_q [\log\ p(z_i| Z_{-i}, X, \Phi)] = \mathbb{E}_q [\log\ h(z_i)] + \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^Ta'(\nu_i) - \mathbb{E}_q \big[a\left(g_i(Z_{-i}, X, \Phi)\right) \big]\\
+\frac{\delta}{\delta \nu_i} \mathbb{E}_q [p(z_i| Z_{-i}, X, \Phi)] =  \frac{\delta}{\delta \nu_i} \mathbb{E}_q [\log\ h(z_i)] 
+    + \bigg( \frac{\delta}{\delta \nu_i}\left( \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^T \right) a'(\nu_i)  
+    + \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^T a''(\nu_i) \bigg) \\ - \frac{\delta}{\delta \nu_i} \mathbb{E}_q \big[a\left(g_i(Z_{-i}, X, \Phi)\right) \big]\\
+= \frac{\delta}{\delta \nu_i} \mathbb{E}_q [\log\ h(z_i)] + \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^Ta''(\nu_i) 
+\end{aligned}$$
+</center>
+
+<p>Note that many of the expectations drop out; when differentiating with respect to one variable, if a function or value is not written in terms of that variable, then it is treated as a constant and drops out to <script type="math/tex">0</script>. Substituting <script type="math/tex">\frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i \vert Z_{-i}, X, \Phi)] \right)</script> for this in our first differentiation, we get:</p>
+
+<center>
+$$\begin{aligned}
+\nu_i = \left( \frac{\delta}{\delta \nu_i} \mathbb{E}_q [\log\ h(z_i)] + \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^Ta''(\nu_i) -  \frac{\delta}{\delta \nu_i} \mathbb{E}_q[\log\ h(z_i))] \right) \left(a''(\nu_i)\right)^{-1} \\
+=  \left( \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^Ta''(\nu_i) \right) \left(a''(\nu_i)\right)^{-1} \\
+= \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]
+\end{aligned}$$
+</center>
+
+<p>So the optimal value (when the derivative is <script type="math/tex">0</script>) of <script type="math/tex">\nu_i = \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]</script>. Since we have a closed form for the natural parameters of exponential family equations, we can compute this expectation without having to do the costly differentiation normally required to obtain the gradient of a function.</p>
+
+<!-- 
+Choosing any one $$q_j(z_j)$$ to optimize (remembering also that $$Z_j$$ can be a subset of $$Z$$, not just one element), we can rewrite this as:
+
+$$\sum\limits_{z\in Z_j} (q_j(z) \sum\limits_{z_i \in Z_{-j}} \prod\limits_{i\neq j} q_i \log\ p(X, z) ) - \sum\limits_{z\in Z_j} q_j \log\ q_j + const$$ 
+
+where $$Z_{_j}$$ means all $$z_i \in Z$$ where $$ i\neq j$$
+
+Let
+
+ $$ \log\ \tilde{p}(x,z_j) = \mathbb{E}_{-j}[\log\ p(X,Z)] + const$$
+
+where 
+
+$$\mathbb{E}_{-j}[\log\ p(X,Z)] = \sum\limits_{z\in Z_j} \log\ p(X,Z) \prod\limits_{i\neq j} q_i $$
+
+
+Then the equation above is the negative KL divergence between $$q_j(Z_j)$$ and $$\tilde{p}(X, Z_j)$$, which we can minimize. Clearly, the minimum value for this will be reached when $$q_j(Z_j) = \tilde{p}(X, Z_j)$$. Let $$q^{*}_j(Z_j)$$ be this optimal solution. Then 
+
+$$\log\ q^{*}_j(Z_j) = \mathbb{E}_{-j}[\log\ p(X,Z)] + const$$
+@bishop2006pattern
+
+Adding back in our conditioner $$\Phi$$ (the model parameters), the right can be rewritten:
+<br/>
+$$\mathbb{E}_{-j}[\log\ p(X,Z | \Phi)] + const $$<br/>
+$$= \mathbb{E}_{-j}[\log\ p(Z_j, Z_{-j}, X | \Phi)] + const$$<br/>
+$$ = \mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j},X,\Phi)p(Z_{-j}|X, \Phi)] + const$$<br/>
+$$ = \mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j}, X,\Phi)] +  \mathbb{E}_{-j}[\log\ p(Z_{-j}|X, \Phi)] + const$$<br/>
+ -->
+
+<!-- <span style="color:red">Question 2: is this the reason why we do this? Bishop uses equality and the second expectation ($$\mathbb{E}_{-j}[\log\ p(Z_{-j}|X, \Phi)]$$) but the other papers (Blei, Cohen) use proportionality and drop the second expectation </span>
+
+We're interested in updating $$q_j(Z_j)$$, but to do so we need to hold $$q_{-j}(Z_{-j})$$ constant, so we are going to generalize this formula to say:
+
+$$ q^*_j(Z_j) \propto \exp\{\mathbb{E}_{-j}[\log\ p(Z_j|Z_{-j}, X,\Phi)]\}$$
+
+The pseudocode for the Coordinate Ascent Variational Inference algorithm (CAVI) helps illustrate this process:
+
+<img src='images/Variational/CAVI.png' height='250'>
+
+
+
+ -->
+
+
+        <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    TeX: {
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    },
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true,
+    }
+  });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+
+    </div><!-- /.container -->
+
+  </body>
+</html>
