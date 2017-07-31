@@ -26,20 +26,20 @@ description: Parsing Minimalist Languages bottom-up
 
     * Vocabulary $$\Sigma$$ = {`every`, `some`, `student`, ...}
     * Types $$T$$ = {`::`, `:`}
-    * Syntactic features $$F$$:
+    * Syntactic features $$F = \text{Selectees} \cup \text{Selectors} \cup \text{Licensors} \cup \text{Licensees}$$
         * Selectees: `C, T, D, N, V, P, ...`
         * Selectors: `=C, =T, =D, =N, =V, =P, ...`
         * Licensors: `+wh, +case, +focus, ...`
         * Licensees: `-wh, -case, -focus, ...`
-        * Chains $$C = \Sigma* \land T \land F*$$
-        * Expressions $$E = C*$$
-        * Lexicon **Lexicon** $$\subset \Sigma* \times \{::\} \times F*$$, a finite set of 1-node trees
-        * Structure building operations:
-        * **merge**: $$(E \times E) \to E$$ is the union of the following three functions. For any $$\cdot \in \{:, ::\}, \gamma \in F*, \delta \in F^+$$ and any chains $$\alpha_1, \ldots, \alpha_k, \iota_1, \ldots, \iota_l$$ (where $$0 \leq k, l$$):
+    * Chains $$C = \Sigma^* \times T \times F^*$$
+    * Expressions $$E = C^*$$
+    * Lexicon **Lexicon** $$\subseteq \Sigma^* \times \{::\} \times F^*$$, a finite set of 1-node trees
+    * Structure building operations:
+        * **merge**: $$(E \times E) \to E$$ is the union of the following three functions. For any $$\cdot \in \{:, ::\}, \gamma \in F^*, \delta \in F^+$$ and any chains $$\alpha_1, \ldots, \alpha_k, \iota_1, \ldots, \iota_l$$ (where $$0 \leq k, l$$):
 
             <img src='images/stabler13-chps9-10/merge123.png' height='150' />
 
-        * **move**: $$E \to E$$ is the union of the following two functions. For any $$\gamma \in F*, \delta \in F^+$$, satisfying the following condition:
+        * **move**: $$E \to E$$ is the union of the following two functions. For any $$\gamma \in F^*, \delta \in F^+$$, satisfying the following condition:
 
             (SMC) none of the chains $$\alpha_1, \ldots, \alpha_{i-1}, \alpha_{i+1}, \ldots, \alpha_k$$ has $$-f$$ as its first feature.
 
