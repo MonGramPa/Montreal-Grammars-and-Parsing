@@ -33,22 +33,22 @@ $$L(q) \geq \sum\limits_{z_i \in Z} q(Z) \log\ p(X,Z|\Phi) + H(q)$$
 For the sake of concise notation, let $$q_j = q_j{Z_j}$$ and let us disregard the conditioner $$\Phi$$ for now. Let's replace $$q(Z)$$ with our approximating product:
 
 <center>
-$$\begin{aligned} L(q) \geq \sum\limits_{z_i \in Z} \left( \prod\limits_{i} q_i(z_i) \right) \log\ p(X,Z|\Phi) + H(q) \\
+$$\begin{equation}\begin{split} L(q) \geq \sum\limits_{z_i \in Z} \left( \prod\limits_{i} q_i(z_i) \right) \log\ p(X,Z|\Phi) + H(q) \\
 L(q) \geq \mathbb{E}_{ \prod\limits_{i} q_i(z_i) } \log\ p(X,Z|\Phi) [\log\ p(X,Z|\Phi)] + H(q)
-\end{aligned}$$
+\end{split}\end{equation}$$
 </center>
 
 Using the chain rule and expanding the entropy term, we can rewrite this expression as
 
 <center>
-$$\begin{aligned} \log\ p(X|\Phi) + \sum\limits_{i=1}^{| Z|} \mathbb{E}_q [\log\ p(z_i | X, z_1,..., z_{i-1}, \Phi)] - \sum\limits_{i=1}^{| Z|} \mathbb{E}_q[\log\ q_{\nu_i}(z_i)] \end{aligned}$$
+$$\begin{equation}\begin{split} \log\ p(X|\Phi) + \sum\limits_{i=1}^{| Z|} \mathbb{E}_q [\log\ p(z_i | X, z_1,..., z_{i-1}, \Phi)] - \sum\limits_{i=1}^{| Z|} \mathbb{E}_q[\log\ q_{\nu_i}(z_i)] \end{split}\end{equation}$$
 </center>
 
 Since $$p(X \vert Phi)$$ does not depend on the variational parameter $$\nu_i$$ we can ignore it (recall that this is a lower bound, not an exact equality, so generally $$X \geq A+B \land A,B \geq 0 \Rightarrow X \geq B \land X \geq A$$). Since $$Z$$ is a set, we can reorder its elements any way we wish. If we reorder them each time so that $$z_i$$ comes last, we can say:
 
 <center>
-$$\begin{aligned} \mathcal{l}_i = \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] - \mathbb{E}_q[\log\ q_{\nu_i}(z_i)]
-\end{aligned}$$
+$$\begin{equation}\begin{split} \mathcal{l}_i = \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] - \mathbb{E}_q[\log\ q_{\nu_i}(z_i)]
+\end{split}\end{equation}$$
 </center>
 
 Note that for any exponential family distribution $$q_{\nu_i}$$, 
@@ -60,11 +60,11 @@ $$q_{\nu_i}(z_i) = h(z_i) \exp \big\{ \nu_i^{T} z_i - a(\nu_i) \big\} $$
 where $$a(\nu_i)$$ is the cumulant function, which for the first three derivatives is equivalent to the corresponding derivatives of the moment generating function. We can rewrite our equation using this form for $$q_{\nu_i}(z_i)$$:
 
 <center>
-$$\begin{aligned} \mathcal{l}_i = \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] - \mathbb{E}_q\bigg[\log\ \Big( h(z_i) \exp \big\{ \nu_i^{T} z_i - a(\nu_i) \big\} \Big) \bigg] \\
+$$\begin{equation}\begin{split} \mathcal{l}_i = \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] - \mathbb{E}_q\bigg[\log\ \Big( h(z_i) \exp \big\{ \nu_i^{T} z_i - a(\nu_i) \big\} \Big) \bigg] \\
 = \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q\bigg[\log\ \left( h(z_i))\right) + \nu_i^{T} z_i - a(\nu_i) \bigg] \\
 = \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q\big[\log\ \left( h(z_i))\right)\big] - \mathbb{E}_q[\nu_i^T z_i]  + \mathbb{E}_q[a(\nu_i)] \\
 = \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q\big[\log\ \left( h(z_i))\right)\big] - \nu_i^T a'(\nu_i) + a(\nu_i)
-\end{aligned}$$ 
+\end{split}\end{equation}$$ 
 </center>
 
 Note that $$\mathbb{E}_q[\nu_i^Tz_i] = \nu_i^T a'(\nu_i)$$ becomes since $$E_q(\z_i) = a'(\nu_i)$$ and $$\nu_i^T$$ factors out as a constant when taking the expectation with respect to $$q$$. The main premise of variational inference is to cast the intractable calculation of the posterior as an optimization problem. In most optimization problems, there are two general steps: 1) computing an objective function which will allow us to 2) optimize the function by adjusting the parameters. So far, we have an objective function (our lower bound $$\mathcal{L}(q)$$ on the marginal likelihood). In order to optimize it, we will use some calculus to find the maximum. Setting the first derivative to $$0$$ and solving allows us to obtain a point where the slope of the function has leveled out. With a strictly convex function, this will be the global maximum. However, in most real-life scenarios, the objective function is not strictly convex. This means that the result could very well be a **local** maximum. Converging on local maxima is one of the risks run when using variational inference. 
@@ -74,51 +74,51 @@ In the general case, taking the derivative of the objective function can be cost
 We are trying to optimize the function by adjusting the variational parameters, so we take the partial derivative of our function with respect to $$\nu_i$$: 
 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 \frac{\delta}{\delta \nu_i} \mathcal{l}_i = \frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q\big[\log\ \left( h(z_i))\right)\big] - \nu_i^T a'(\nu_i) + a(\nu_i) \right) \\
 = \frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q[\log\ h(z_i))] \right) - \left(\nu_i^Ta''(\nu_i)  + a''(\nu_i)\right) + a''(\nu_i) \\
 = \frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q[\log\ h(z_i))] \right) - \nu_i^Ta''(\nu_i)
-\end{aligned}$$
+\end{split}\end{equation}$$
 </center>
 
 Setting this to $$0$$ we get:
 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 0 = \frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q[\log\ h(z_i))] \right) - \nu_i^Ta''(\nu_i) \\
 \nu_i^Ta''(\nu_i) = \frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \mathbb{E}_q[\log\ h(z_i))] \right)\\
 \nu_i =  \left( \frac{\delta}{\delta \nu_i} \mathbb{E}_q[\log\ p(z_i| Z_{-i}, X, \Phi)] -  \frac{\delta}{\delta \nu_i} \mathbb{E}_q[\log\ h(z_i))] \right) \left(a''(\nu_i)\right)^{-1}
-\end{aligned}$$
+\end{split}\end{equation}$$
 </center>
 
 Recall that for this to work, $$q$$ must be in the exponential family. Similarly, if $$p(z_i\vert Z_{-i}, X, \Phi)$$ is a member of the exponential family, it can be rewritten:
 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 p(z_i| Z_{-i}, X, \Phi) = h(z_i) \exp\big\{g_i(Z_{-i}, X, \Phi)^Tz_i - a\left(g_i(Z_{-i}, X, \Phi)\right) \big\}
-\end{aligned}$$
+\end{split}\end{equation}$$
 </center>
 
 where $$g_i(Z_{-i}, X, \Phi)$$ is the natural parameter of distribution $$p$$ (for exponential family distributions, this natural parameter has already been defined). Plugging this in for $$ p(z_i\vert Z_{-i}, X, \Phi) $$ (first in the expected value alone, for the sake of readability) and taking the derivative we get:
 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 \mathbb{E}_q [\log\ p(z_i| Z_{-i}, X, \Phi)] = \mathbb{E}_q [\log\ h(z_i)] + \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^Ta'(\nu_i) - \mathbb{E}_q \big[a\left(g_i(Z_{-i}, X, \Phi)\right) \big]\\
 \frac{\delta}{\delta \nu_i} \mathbb{E}_q [p(z_i| Z_{-i}, X, \Phi)] =  \frac{\delta}{\delta \nu_i} \mathbb{E}_q [\log\ h(z_i)] 
     + \bigg( \frac{\delta}{\delta \nu_i}\left( \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^T \right) a'(\nu_i)  
     + \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^T a''(\nu_i) \bigg) \\ - \frac{\delta}{\delta \nu_i} \mathbb{E}_q \big[a\left(g_i(Z_{-i}, X, \Phi)\right) \big]\\
 = \frac{\delta}{\delta \nu_i} \mathbb{E}_q [\log\ h(z_i)] + \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^Ta''(\nu_i) 
-\end{aligned}$$
+\end{split}\end{equation}$$
 </center>
 
 Note that many of the expectations drop out; when differentiating with respect to one variable, if a function or value is not written in terms of that variable, then it is treated as a constant and drops out to $$0$$. Substituting $$\frac{\delta}{\delta \nu_i} \left( \mathbb{E}_q[\log\ p(z_i \vert Z_{-i}, X, \Phi)] \right)$$ for this in our first differentiation, we get:
 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 \nu_i = \left( \frac{\delta}{\delta \nu_i} \mathbb{E}_q [\log\ h(z_i)] + \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^Ta''(\nu_i) -  \frac{\delta}{\delta \nu_i} \mathbb{E}_q[\log\ h(z_i))] \right) \left(a''(\nu_i)\right)^{-1} \\
 =  \left( \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]^Ta''(\nu_i) \right) \left(a''(\nu_i)\right)^{-1} \\
 = \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]
-\end{aligned}$$
+\end{split}\end{equation}$$
 </center>
 
 So the optimal value (when the derivative is $$0$$) of $$\nu_i = \mathbb{E}_q[g_i(Z_{-i}, X, \Phi)]$$. Since we have a closed form for the natural parameters of exponential family equations, we can compute this expectation without having to do the costly differentiation normally required to obtain the gradient of a function. 

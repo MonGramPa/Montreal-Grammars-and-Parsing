@@ -66,13 +66,15 @@ Let’s also write out the generative model as a joint probability
 distribution: 
 
 <center>
-$$\begin{aligned}
+$$
+\begin{equation}
+\begin{split}
 P(X\mid Z, \Phi)P(Z\mid \Phi) = P(X\mid z', z_a, \Theta, \nu, a, b, \alpha)P(Z\mid G, a,b,\alpha)= \\
 P(X\mid z', z_A, G, \nu, \Theta, a, b, \alpha) \\
 \times P(z' \mid  z_a, G, \nu, \Theta, a, b, \alpha) \\
 \times P(z_a \mid  G, \nu, \Theta, a,b,\alpha) \\
 \times P(\nu \mid  a,b)\\
-\times P(\Theta\mid \alpha) \end{aligned}$$
+\times P(\Theta\mid \alpha) \end{split}\end{equation}$$
 </center>
 
  This shows the dependencies in the generative model. For
@@ -148,13 +150,13 @@ intractable integral and some variational distribution $$q$$.\
 3.  KL divergence is given by:
 
 <center>
-$$\begin{aligned} 
+$$\begin{equation}\begin{split} 
 D_{KL}(q_\nu (Z) \mid \mid  p(Z\mid X,\Phi)) = \mathbb{E}_q[\log\ \frac{q_\nu(Z)}{p(Z\mid X,\Phi)}] \\
  = \mathbb{E}_q [\log\ q_\nu(Z)- \log\ p(Z\mid X, \Phi)] \\
  = \mathbb{E}_q [\log\ q_\nu(Z)- \log\ \frac{p(Z,X\mid \Phi)}{p(X\mid \Phi)}] \\
  = \mathbb{E}_q [\log\ q_\nu(Z)- (\log\ p(Z,X\mid \Phi) - \log\ p(X\mid \Phi))] \\
  = \mathbb{E}_q [\log\ q_\nu(Z)] - \mathbb{E}_q [\log\ p(Z,X\mid \Phi)] + \log\ p(X\mid \Phi) 
- \end{aligned}$$
+ \end{split}\end{equation}$$
 </center>
 
 \[@blei.d:2006\] If we think about what KL divergence represents, we can
@@ -163,10 +165,10 @@ how minimizing this equation is the same as maximizing the lower bound
 on $$\log\ p(X\mid \Phi)$$ 
 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 0 \leq \mathbb{E}_q [\log\ q_\nu(Z)] - \mathbb{E}_q [\log\ p(Z,X\mid \Phi)] + \log\ p(X\mid \Phi)\\
 - \log\ p(X\mid \Phi) \leq \mathbb{E}_q [\log\ q_\nu(Z)] - \mathbb{E}_q [\log\ p(Z,X\mid \Phi)]  \\
-\log\ p(X\mid \Phi) \geq \mathbb{E}_q [\log\ p(Z,X\mid \Phi)] - \mathbb{E}_q [\log\ q_\nu(Z)] \end{aligned}$$
+\log\ p(X\mid \Phi) \geq \mathbb{E}_q [\log\ p(Z,X\mid \Phi)] - \mathbb{E}_q [\log\ q_\nu(Z)] \end{split}\end{equation}$$
 </center>
 
 Another way to reach this same equation is by using
@@ -181,29 +183,29 @@ $$\log\ \sum\limits_{\forall z \in \mathbf{Z}} q(z) \frac{p(x,z\mid \Phi) }{q(z)
 Recall that $$\log\ (\frac{x}{y})= \log\ (x) - \log\ (y)$$. So this
 equation can be broken into: <br/>
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 \sum\limits_{\forall z \in \mathbf{Z}} q(z) \log\ \frac{ p(x,z\mid \Phi) }{q(z)}= \sum\limits_{\forall z \in \mathbf{Z}} q(z) (\log p(x,z\mid \Phi) - \log q(z)) = \\
  \sum\limits_{\forall z \in \mathbf{Z}} q(z) \log p(x,z\mid \Phi) - \sum\limits_{\forall z \in \mathbf{Z}}  q(z)\log\ q(z) =  \\
  \sum\limits_{\forall z \in \mathbf{Z}} q(z) \log p(x,z\mid \Phi) + \mathcal{H}(q)\\
-\end{aligned}$$
+\end{split}\end{equation}$$
 </center>
 where 
 <center>
-$$\begin{aligned}
-\mathcal{H}(q) =  - \sum\limits_{\forall z \in \mathbf{Z}}  q(z)\log\ q(z) \end{aligned}$$
+$$\begin{equation}\begin{split}
+\mathcal{H}(q) =  - \sum\limits_{\forall z \in \mathbf{Z}}  q(z)\log\ q(z) \end{split}\end{equation}$$
 </center>
 
 [@blei2017variational]. This first term is of the form of our expected
 value definition in §1.3, so our equation becomes:
 
 <center>
-$$\begin{aligned} \log\ p(x\mid \Phi) \geq \mathbb{E}_q[\log\ p(x,z\mid \Phi)] + \mathcal{H}(q) \end{aligned}$$
+$$\begin{equation}\begin{split} \log\ p(x\mid \Phi) \geq \mathbb{E}_q[\log\ p(x,z\mid \Phi)] + \mathcal{H}(q) \end{split}\end{equation}$$
 </center>
 
 This derivation yields an important fact: 
 <center>
-$$\begin{aligned}
-\log\ p(X\mid \Phi) - KL(q(Z) \mid \mid  p(Z\mid X, \Phi)) = \mathbb{E}_q[\log\ p(z,x \mid  \Phi)] + H(q) \end{aligned}$$
+$$\begin{equation}\begin{split}
+\log\ p(X\mid \Phi) - KL(q(Z) \mid \mid  p(Z\mid X, \Phi)) = \mathbb{E}_q[\log\ p(z,x \mid  \Phi)] + H(q) \end{split}\end{equation}$$
 </center>
 From this equation, we can see why minimizing KL divergence gives us the
 best possible value for our marginal likelihood.
@@ -214,13 +216,13 @@ Applying variational methods to the model
 Recall our full joint probability distribution for our generative model
 from §1.2: 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 P(X\mid Z, \Phi)P(Z\mid \Phi) = P(X\mid z', z_a, \Theta, \nu, a, b, \alpha)P(Z\mid G, a,b,\alpha)= \\
 P(X\mid z', z_A, G, \nu, \Theta, a, b, \alpha)\\
 \times P(z' \mid  z_a, G, \nu, \Theta, a, b, \alpha) \\
 \times P(z_a \mid  G, \nu, \Theta, a,b,\alpha) \\
 \times P(\nu \mid  a,b)\\
-\times P(\Theta\mid \alpha) \end{aligned}$$ </center>
+\times P(\Theta\mid \alpha) \end{split}\end{equation}$$ </center>
 
 Recall that doing variational inference requires inference only over our
 latent variables. This is because given a full tree derivation $$z'$$, the relationship between $$z'$$ and $$X$$ is deterministic in the sense that the yields of the derivations in $$z'$$ map exactly to the strings in $$X$$.
@@ -228,23 +230,23 @@ However, to get to $$z'$$ we need to do variational inference on
 $$P(Z\mid G, a,b,\alpha)$$. This part expands to: 
 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 P(z' \mid  z_a, G, \nu, \Theta, a, b, \alpha) \\
 \times P(z_a \mid  G, \nu, \Theta, a,b,\alpha) \\
 \times P(\nu \mid  a,b)\\
 \times P(\Theta\mid \alpha)
-\end{aligned}$$
+\end{split}\end{equation}$$
 </center>
 
 So going back to our equation for the marginal probability, we need to find 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 \mathbb{E}_q [\log\ P(Z\mid G, a, b, \alpha)] + H(q) \\
  = \mathbb{E}_q [\log\ P(z' \mid  z_a, G, \nu, \Theta, a, b, \alpha)] \\
  + \mathbb{E}_q [\log\ P(z_a \mid  G, \nu, \Theta, a,b,\alpha)] \\
  + \mathbb{E}_q [\log\ P(\nu \mid  a,b)] \\
  + \mathbb{E}_q [\log\ P(\Theta\mid \alpha)] + H(q)\\
- \end{aligned}$$
+ \end{split}\end{equation}$$
  </center>
 
 If we can assume that the data contains only strings that can be parsed by the grammar, we do not need to consider G as a parameter, since the rules for producing and for parsing strings are the same. We also know from the definition of our model which
@@ -256,35 +258,35 @@ depends on $$\nu$$. We can use this information to rewrite the equation
 more accurately: 
 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 \mathbb{E}_q [\log\ P(Z\mid G, a, b, \alpha)] + H(q) \\
  = \mathbb{E}_q [\log\ P(z' \mid  \nu)] \\
  + \mathbb{E}_q [\log\ P(z_a \mid   \nu, \Theta )] \\
  + \mathbb{E}_q [\log\ P(\nu \mid  a,b)] \\
  + \mathbb{E}_q [\log\ P(\Theta\mid \alpha)]  + H(q)\\
-\end{aligned}$$
+\end{split}\end{equation}$$
 </center>
 
 Finally, we know from our definition of
 $$\Theta,\ \nu,\ z_A,$$ and $$z$$ in §1.1 that we can decompose them into
 their subscripted constituents. This gives us: 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 = \sum\limits_{A\in\mathcal{M}}( \mathcal{H}(q) + \mathbb{E}_q[\log\ p(x, \Theta \mid  \alpha)] \\
 + \mathbb{E}_q[\log\ p(x, \nu \mid  a) ]\\
 + \mathbb{E}_q[\log\ p(x, z_A \mid  \nu, \Theta)] \\
 + \mathbb{E}_q[\log\ p(x, z' \mid  \nu)] )\\
-\end{aligned}$$
+\end{split}\end{equation}$$
 </center>
 
 
 <center>
-$$\begin{aligned}
+$$\begin{equation}\begin{split}
 = \mathcal{H}(q) + \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, \Theta \mid  \alpha)] 
 + \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, \nu \mid  a) ]
 + \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, z_A \mid  \nu, \Theta)] 
 + \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, z' \mid  \nu)] 
-\end{aligned}$$
+\end{split}\end{equation}$$
 </center>
 
 
