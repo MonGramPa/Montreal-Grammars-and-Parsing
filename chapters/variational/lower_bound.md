@@ -272,9 +272,9 @@ $$\Theta,\ \nu,\ z_A,$$ and $$z$$ in §1.1 that we can decompose them into
 their subscripted constituents. This gives us: 
 <center>
 $$\begin{equation}\begin{split}
-= \sum\limits_{A\in\mathcal{M}}( \mathcal{H}(q) + \mathbb{E}_q[\log\ p(x, \Theta \mid  \alpha)] \\
-+ \mathbb{E}_q[\log\ p(x, \nu \mid  a) ]\\
-+ \mathbb{E}_q[\log\ p(x, z_A \mid  \nu, \Theta)] \\
+= \sum\limits_{A\in\mathcal{M}}( \mathcal{H}(q) + \mathbb{E}_q[\log\ p(\Theta \mid  \alpha)] \\
++ \mathbb{E}_q[\log\ p(\nu \mid  a) ]\\
++ \mathbb{E}_q[\log\ p(z_A \mid  \nu, \Theta)] \\
 + \mathbb{E}_q[\log\ p(x, z' \mid  \nu)] )\\
 \end{split}\end{equation}$$
 </center>
@@ -282,10 +282,10 @@ $$\begin{equation}\begin{split}
 
 <center>
 $$\begin{equation}\begin{split}
-= \mathcal{H}(q) + \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, \Theta \mid  \alpha)] 
-+ \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, \nu \mid  a) ]
-+ \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, z_A \mid  \nu, \Theta)] 
-+ \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, z' \mid  \nu)] 
+= \mathcal{H}(q) + \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, \Theta \mid  \alpha)] \\
++ \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(\nu \mid  a) ]\\
++ \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(z_A \mid  \nu, \Theta)] \\
++ \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(x, z' \mid  \nu_A)] \\
 \end{split}\end{equation}$$
 </center>
 
