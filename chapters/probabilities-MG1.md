@@ -34,10 +34,9 @@ This is a modified version of Harkema (2001:§4)'s Bottom-Up parser, which allow
   * Move (in progress)
     - move-1 (move to final landing position)
 
-      $$\frac{(([(i,j):+y\gamma,\alpha_1,\ldots,\alpha_k,(v,i):-y,\tau_1,\ldots,\tau_l],r)}{([(v,j):\gamma,\alpha_1,\ldots,\alpha_k,\tau_1,\ldots,\tau_l],r+= P(move-1) \cdot r)} $$
+      $$\frac{(([(i,j):+y\gamma,\alpha_1,\ldots,\alpha_k,(v,i):-y,\tau_1,\ldots,\tau_l],p)}{([(v,j):\gamma,\alpha_1,\ldots,\alpha_k,\tau_1,\ldots,\tau_l],r+= P(move-1) \cdot p)} $$
 
 
     - move-2 (mover with multiple Licensee features)
 
-      $$\frac{(([(i,j):+y\gamma,\alpha_1,\ldots,\alpha_k,(v,w):-y\delta,\tau_1,\ldots,\tau_l],r)}{([(i,j):\gamma,\alpha_1,\ldots,\alpha_k,(v,w):\delta,\tau_1,\ldots,\tau_l],r+= P(move-1) \cdot r)} $$
-      
+      $$\frac{(([(i,j):+y\gamma,\alpha_1,\ldots,\alpha_k,(v,w):-y\delta,\tau_1,\ldots,\tau_l],p)}{([(i,j):\gamma,\alpha_1,\ldots,\alpha_k,(v,w):\delta,\tau_1,\ldots,\tau_l],r+= P(move-1) \cdot p)} $$
