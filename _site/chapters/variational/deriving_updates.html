@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Deriving specific updates</title>
+
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="/node_modules/codemirror/theme/neat.css">
+    <link rel="stylesheet" href="/assets/css/katex.min.css">
+    <link rel="stylesheet" href="/assets/css/custom.css">
+    <link rel="stylesheet" href="/assets/css/code.css">
+
+    <script src="/assets/js/webchurch.min.js"></script>
+    <script src="/assets/js/katex.min.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/node_modules/codemirror/lib/codemirror.js"></script>
+    <script src="/node_modules/codemirror/mode/javascript/javascript.js"></script>
+    <script src="/assets/js/cm-folding.js"></script>
+    <script src="/assets/js/cm-comments.js"></script>
+    <script src="/assets/js/webppl.min.js"></script>
+    <script src="/bower_components/jquery-autosize/jquery.autosize.min.js"></script>
+    <script src="/bower_components/d3/d3.min.js"></script>
+    <script src="/bower_components/vega/vega.min.js"></script>
+    <!-- <script src="https://probmods.org/webchurch/online/vega.min.js"></script> -->
+    <script src="/bower_components/underscore/underscore.js"></script>
+    <script src="/bower_components/react/JSXTransformer.js"></script>
+    <script src="/bower_components/react/react-with-addons.min.js"></script>
+    <script src="/bower_components/showdown/compressed/showdown.js"></script>
+    <script src="/assets/js/custom.js"></script>
+    <script type="text/jsx" src="/assets/js/editor.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Montreal Grammars and Parsing Project</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right collapse navbar-collapse">
+            <li><a href="/editor.html">Editor</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="container">
+
+      <script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<div class="page-header">
+  <h1>Deriving specific updates</h1>
+  
+</div>
+
+<h1 id="deriving-variational-updates-for-specific-parts-of-the-model">Deriving Variational Updates for Specific Parts of the Model</h1>
+
+<h2 id="the-coordinate-ascent-algorithm">The Coordinate Ascent Algorithm</h2>
+
+<p>For a review of the general form of exponential family equations as well as the coordinate ascent algorithm and mean field approximation, see <a href="deriving_q.html">Deriving Variation Updates</a></p>
+
+<h2 id="the-exponential-family">The Exponential Family</h2>
+<p>Recall that we can write any exponential family distribution <script type="math/tex">p(x\mid \nu)</script> :</p>
+
+<center>
+$$p(x \mid \nu ) = h(x) \exp \big\{ \eta^T T(x) - A(\eta)\big\}$$
+</center>
+<p>where <script type="math/tex">h(x)</script> is the base measure, <script type="math/tex">\eta</script> are the natural parameters, <script type="math/tex">T(x)</script> are the sufficient statistics, and <script type="math/tex">A(\eta)</script> is the log-normalizer.</p>
+
+<h2 id="the-elbo">The ELBO</h2>
+<p>Recall that our ELBO function is:</p>
+
+<center>
+$$\begin{equation}\begin{split}
+= \mathcal{H}(q) + \\
++ \sum\limits_{A \in \mathcal{T}} \mathbb{E}_q[\log\ p(\epsilon \mid \rho_1, \rho_2)]
++ \sum\limits_{A \in \mathcal{T}} \mathbb{E}_q[\log\ p(\Theta_{bot} \mid  \alpha_{bot}] \\
++ \sum\limits_{A\in\mathcal{M} \setminus \mathcal{T}}  \mathbb{E}_q[\log\ p(\Theta_{top} \mid  \alpha_{top}] \\
++ \sum\limits_{A\in\mathcal{M} \setminus \mathcal{T}} \mathbb{E}_q[\log\ p(\nu \mid  a, b) ]\\
++ \sum\limits_{A\in\mathcal{M}} \mathbb{E}_q[\log\ p(z_A \mid  \nu, \Theta_{bot}, \Theta_{top}, \epsilon)] \\
++ \sum\limits_{A\in\mathcal{M} \setminus \mathcal{T}} \mathbb{E}_q[\log\ p(x, z' \mid  \nu_A)] \\
+\end{split}\end{equation}$$
+</center>
+
+<h2 id="the-dirichlet-distribution">The Dirichlet Distribution</h2>
+<p>Using this information, let’s compute the expectation in our ELBO for our Dirichlet multinomials <script type="math/tex">\Theta_{top}</script> and <script type="math/tex">\Theta_{bot}</script>. This part is the same for both, so for simplicity we will use a generic variable <script type="math/tex">\Theta</script> :</p>
+
+<center>
+$$\begin{equation}
+\begin{split} 
+\mathbb{E}_q \big[ \log\ p(\Theta \mid \alpha)\big] = \\
+\mathbb{E}_q \big[\log \exp \Bigg\{ \begin{bmatrix} \alpha_1 -1 \\ ... \\ \alpha_k - 1 \end{bmatrix}^T \begin{bmatrix} \log(\Theta_1) \\ ... \\ \log(\Theta_k) \end{bmatrix} - \log \Gamma(\sum\limits_{j=1}^k \alpha_j) - \sum\limits_{i=1}^k \log\Gamma(\alpha_i)\Bigg\} \big] = \\
+\end{split}
+\end{equation}$$
+</center>
+
+<p>Since the natural parameters and log normalizer contain no terms of <script type="math/tex">q</script>, this becomes:</p>
+
+<center>
+$$\begin{equation}
+\begin{split} 
+\log \Gamma(\sum\limits_{j=1}^k \alpha_j) - \sum\limits_{i=1}^k \log\Gamma(\alpha_i)  + \begin{bmatrix} \alpha_1 -1 \\ ... \\ \alpha_k - 1 \end{bmatrix}^T \begin{bmatrix} \mathbb{E}_q [\log \Theta_1] \\ ... \\ \mathbb{E}_q[\log \Theta_k] \end{bmatrix} =  \\ 
+\log \Gamma(\sum\limits_{j=1}^k \alpha_j) - \sum\limits_{i=1}^k \log\Gamma(\alpha_i) + \sum\limits_{i=1}^k (\alpha_i -1) ( \mathbb{E}_q[\log \Theta_i] )
+\end{split}
+\end{equation}$$
+</center>
+
+<p>Because <script type="math/tex">\mathbb{E}_q [\log \Theta_1] = \frac{\delta}{\delta \eta} A(\eta)</script> we can compute <script type="math/tex">\mathbb{E}_q [\log \Theta_1] = \Psi (\tau^i) - \Psi (\sum\limits_{j=1}^k \tau_j)</script>  (see <a href="https://endymecy.gitbooks.io/spark-ml-source-analysis/content/%E8%81%9A%E7%B1%BB/LDA/docs/Latent%20Dirichlet%20Allocation.pdf">Blei 2003</a>). Rewriting our our expectation with respect to this result, we get:</p>
+
+<center>
+$$\begin{equation}
+\begin{split}
+\log \Gamma(\sum\limits_{j=1}^k \alpha_j) - \sum\limits_{i=1}^k \log\Gamma(\alpha_i) + \sum\limits_{i=1}^k (\alpha_i -1) \big(\Psi (\tau^i) - \Psi (\sum\limits_{j=1}^k \tau_j)\big)
+\end{split}
+\end{equation}$$
+</center>
+
+<h2 id="the-beta-distribution">The Beta Distribution</h2>
+<p>Similarly, we can calculate the expectation of the Beta distribution on both <script type="math/tex">\epsilon</script> and <script type="math/tex">\nu</script>. We’ll do the update for <script type="math/tex">\nu</script>, but it will identical for <script type="math/tex">\epsilon</script>.</p>
+
+<p>The exponential family expansion for <script type="math/tex">\nu</script> is:</p>
+
+<center>
+$$\begin{equation}
+\log\  p(\nu | a, b) =\log\ \exp \Bigg\{ \begin{bmatrix}a -1 \\ b-1 \end{bmatrix}\begin{bmatrix}  \ln x \\ \ln (1-x)  \end{bmatrix} - \ln \Gamma(a) + \ln \Gamma(b) - \ln \Gamma(a + b)\Bigg\}
+\end{equation}$$
+</center>
+
+<p>recall that <script type="math/tex">\nu</script> is actually a collection of stick proportions (<script type="math/tex">\nu_1, ... \nu_k</script>) so this becomes</p>
+
+<center>
+$$\begin{equation}
+\begin{split}
+\sum\limits_{i=1}^{N_a} \mathbb{E}_q \Bigg[(a-1)(\ln\ \nu_{A,i}) + (b-1)(\ln\ (1-\nu_{A,i}))  - \ln\Gamma(a) - \ln\Gamma(b) + \ln\Gamma(a+b)\bigg] = \\
+\sum\limits_{i=1}^{N_a} a \big(\Psi(\gamma^2_{A,i}) - \Psi (\gamma^1_{A,i} + \gamma^2_{A,i}) \big) + ib \big( \Psi(\gamma^2_{A,i}) - \Psi (\gamma^1_{A,i} + \gamma^2_{A,i}) \big) + \log\ \Gamma(a + 1 + ib) - \log\Gamma(ib + a) - \log\Gamma(1-b)
+\end{split}
+\end{equation}$$
+</center>
+
+<h2 id="sub-tree-parses">Sub-tree parses</h2>
+<p>Now let’s expand the expectation of the sub-tree parses <script type="math/tex">z_A</script>:</p>
+
+<center>
+$$\begin{equation}
+\begin{split}
+\mathbb{E}_q \big[ \log\ p(z_A,i | \nu, \Theta_{top}, \Theta_{bot}, \epsilon ) \big] = \sum\limits_{A \rightarrow \beta \in R_A} \tilde f(A \rightarrow \beta, S_{A,i}) \times \mathbb{E}_q [\Theta_{A \rightarrow \beta}] + \\
+\sum\limits_{B \in \mathbb{U} \setminus \mathbb{T}} \sum\limits_{B \rightarrow \beta \in R_B} \tilde f(B \rightarrow \beta, S_{A,i}) \times \mathbb{E}_q [\log \Theta_{tops\ B\rightarrow \beta}] + \\
+\sum\limits_{B \in \mathbb{T}} \sum\limits_{B \rightarrow \beta \in R_B} \tilde f(B \rightarrow \beta, S_{A,i}) \times \mathbb{E}_q [\log \Theta_{bot\ B\rightarrow \beta}] + \\
+\sum\limits_{B \in \mathbb{M}} \sum\limits_{j=1}^{N_B} \tilde f(A \rightarrow S_{A,i}, S_{B,k}) \times \Big(\sum\limits_{i'=1}^{i-1} \mathbb{E}_q[\log\ \nu_{A,i'}] + \mathbb{E}_q [\log\ (1- \nu_{A,i})] \Big)
+\end{split}
+\end{equation}$$
+</center>
+
+<p>recall that <script type="math/tex">\mathbb{E}_q [\log \Theta_{A\rightarrow \beta }] = \Psi (\tau_{A \rightarrow \beta}) - \Psi (\sum\limits_{A\rightarrow \beta} \tau_{A\rightarrow \beta})</script> 
+and <script type="math/tex">\mathbb{E}_q [\log \nu_{A,i}] = \Psi (\gamma^1_{A,i}]) - \Psi (\gamma^1_{A,i} + \gamma^2_{A,i})</script></p>
+
+<h2 id="expanding-hq">Expanding H(q)</h2>
+<p>Given the structure of the model, the entropy term <script type="math/tex">H(q)</script> expands to</p>
+
+<center>
+$$\begin{equation}
+\begin{split}
+H(q) = \sum\limits_{A\in \mathcal{M}} \Big( H(q(\Theta_A)) \sum\limits_{i=1}^{N_A} H(q(\nu_{A,i}))\times H(q(z_{A,i}))\Big) \times \sum\limits_{i=1}^{n} H(q(z'_i)) \\
+\end{split}
+\end{equation}
+$$
+</center>
+
+<p>Because the Dirichlet and Beta distribution are commonly used, we already know the entropy terms for these distributions:</p>
+
+<p>For the Dirichlet, entropy is</p>
+
+<center>
+$$\begin{equation}
+\begin{split}
+H(q) = \frac{\prod_{i=1}^{\mid R_A\mid } \Gamma(\alpha_i)}{\Gamma\bigl(\sum\limits_{i=1}^{\mid R_A\mid } \alpha_i\bigr)} - (\mid R_A\mid -\alpha_0)\psi(\alpha_0) - \sum\limits_{j=1}^{\mid R_A\mid } (\alpha_j-1)\psi(\alpha_j)
+\end{split}
+\end{equation}
+$$
+</center>
+
+<p>and for the Beta, entropy is:</p>
+
+<center>
+$$\begin{equation}
+\begin{split}
+H(q) = \ln \frac{\Gamma(\gamma^1_{A,i})\Gamma(\gamma^2_{A,i})}{\Gamma(\gamma^1_{A,i} + \beta)} -(\gamma^1_{A,i}-1)\psi(\gamma^1_{A,i})-(\gamma^2_{A,i}-1)\psi(\gamma^2_{A,i}) 
++(\gamma^1_{A,i}+\gamma^2_{A,i}-2)\psi(\gamma^1_{A,i}+\gamma^2_{A,i}) 
+\end{split}
+\end{equation}
+$$
+</center>
+
+<p>Plugging this into the original formula for the entropy term, we get</p>
+
+<center>
+$$\begin{equation}
+\begin{split}
+H(q) = \sum\limits_{A\in \mathcal{M}} \Big( \frac{\prod_{i=1}^{\mid R_A\mid } \Gamma(\alpha_i)}{\Gamma\bigl(\sum\limits_{i=1}^{\mid R_A\mid } \alpha_i\bigr)} 
+ - (\mid R_A\mid -\alpha_0)\psi(\alpha_0) - \sum\limits_{j=1}^{\mid R_A\mid } (\alpha_j-1)\psi(\alpha_j)  \\
+  \sum\limits_{i=1}^{N_A}   \ln \frac{\Gamma(\gamma^1_{A,i})\Gamma(\gamma^2_{A,i})}{\Gamma(\gamma^1_{A,i} + \beta)}  -(\gamma^1_{A,i}-1)\psi(\gamma^1_{A,i})-(\gamma^2_{A,i}-1)\psi(\gamma^2_{A,i}) \\
++(\gamma^1_{A,i}+\gamma^2_{A,i}-2)\psi(\gamma^1_{A,i}+\gamma^2_{A,i})      \times H(q(z_{A,i}))\Big)  \times \sum\limits_{i=1}^{n} H(q(z'_i)) 
+\end{split}
+\end{equation}
+$$
+</center>
+
+<h2 id="lower-bound-for-beta-distribution">Lower bound for Beta Distribution</h2>
+<p>Based on these expansions, we can form a variational lower bound for the beta distribution by grouping together all the terms from equations (4), (6), (7), and (11) which contain <script type="math/tex">\nu</script>:</p>
+
+<center>
+$$\begin{equation}
+\begin{split}
+\mathcal{L}(\gamma^1_{A,i}, \gamma^2_{A,i}) = \log\Gamma(\gamma^1_{A,i}) + \log\Gamma(\gamma^2_{A,i}) - \log\Gamma(\gamma^1_{A,i} + \gamma^2_{A,i}) \\
+ + (\gamma^1_{A,i} + \gamma^2_{A,i} - 2 + a_A + ib_A)\Psi(\gamma^1_{A,i} + \gamma^2_{A,i}) + (\gamma^1_{A,i} + a_A -1)\Psi(\gamma^1_{A,i}) + (\gamma^2_{A,i} + ib_A -1)\Psi(\gamma^2_{A,i}) \\
++ \sum\limits_{B \in \mathbb{M}} \sum\limits_{j=1}^{N_B} \tilde f(A \rightarrow S_{A,i}, S_{B,k}) \times \Big(\sum\limits_{i'=1}^{i-1} \mathbb{E}_q[\log\ \nu_{A,i'}] + \mathbb{E}_q [\log\ (1- \nu_{A,i})] \Big)
+\end{split}
+\end{equation}
+$$
+</center>
+
+<h2 id="updates-for-beta">Updates for Beta</h2>
+<p>In order to get the updates for the variational beta Parameters <script type="math/tex">\gamma^1, \gamma^2</script>, we will take the derivative of the lower bound we just found with respect to the variable we want to update, set this to 0, and solve.</p>
+
+<p>This process yields the following updates:</p>
+
+<center>
+$$\begin{equation}
+\begin{split}
+\gamma^1_{A,i} = 1- b_A + \sum\limits_{B \in \mathbb{M}} \sum\limits_{j=1}^{N_B} \tilde f(A \rightarrow S_{A,i}, S_{B,k})\\
+\gamma^2_{A,i} = a_A + ib_A + \sum\limits_{j=1}^{i-1}\sum\limits_{B\in \mathcal{M}}\sum\limits_{k=1}^{N_B}  f(A \rightarrow S_{A,j}, S_{B,k})
+\end{split}
+\end{equation}
+$$
+</center>
+
+<h2 id="remaining-updates">Remaining Updates</h2>
+<p>We can repeat this process in order to obtain the remaining updates:</p>
+
+<center>
+$$\begin{equation}
+\begin{split}
+
+\kappa_{\cdot, A \rightarrow \beta} = \alpha_bot + \sum\limits_{A \rightarrow \beta \in R_bot} \tilde f(A \rightarrow \beta, S_{A,i}) 
+\tau_{\cdot, A \rightarrow \beta} = \alpha_top + \sum\limits_{A \rightarrow \beta \in R_top} \tilde f(A \rightarrow \beta, S_{A,i}) \\
+\phi_{\cdot, A\rightarrow s_{A,i})} = \Psi(\gamma^1_{A,i}) - \Psi(\gamma^1_{A,i} + \gamma^2_{A,i}) + \sum\limits_{j=1}^{i-1} \Big(\Psi(\gamma^2_{A,j}) - \Psi(\gamma^1_{A,j} + \gamma^2_{A,j}) \Big)\\
+\phi_{\cdot, A\rightarrow \beta} = \Psi(\tau_{\cdot, A \rightarrow \beta}) - \Psi(\sum\limits_{\beta} \tau_{\cdot, A \rightarrow \beta})
+\end{split}
+\end{equation}
+$$
+</center>
+
+
+
+        <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    TeX: {
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    },
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true,
+    }
+  });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+
+    </div><!-- /.container -->
+
+  </body>
+</html>

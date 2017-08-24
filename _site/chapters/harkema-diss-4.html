@@ -92,23 +92,26 @@
     <ul>
       <li>Vocabulary <script type="math/tex">\Sigma</script> = {<code class="highlighter-rouge">every</code>, <code class="highlighter-rouge">some</code>, <code class="highlighter-rouge">student</code>, …}</li>
       <li>Types <script type="math/tex">T</script> = {<code class="highlighter-rouge">::</code>, <code class="highlighter-rouge">:</code>}</li>
-      <li>Syntactic features <script type="math/tex">F</script>:
+      <li>Syntactic features <script type="math/tex">F = \text{Selectees} \cup \text{Selectors} \cup \text{Licensors} \cup \text{Licensees}</script>
         <ul>
           <li>Selectees: <code class="highlighter-rouge">C, T, D, N, V, P, ...</code></li>
           <li>Selectors: <code class="highlighter-rouge">=C, =T, =D, =N, =V, =P, ...</code></li>
           <li>Licensors: <code class="highlighter-rouge">+wh, +case, +focus, ...</code></li>
           <li>Licensees: <code class="highlighter-rouge">-wh, -case, -focus, ...</code></li>
-          <li>Chains <script type="math/tex">C = \Sigma* \land T \land F*</script></li>
-          <li>Expressions <script type="math/tex">E = C*</script></li>
-          <li>Lexicon <strong>Lexicon</strong> <script type="math/tex">\subset \Sigma* \times \{::\} \times F*</script>, a finite set of 1-node trees</li>
-          <li>Structure building operations:</li>
+        </ul>
+      </li>
+      <li>Chains <script type="math/tex">C = \Sigma^* \times T \times F^*</script></li>
+      <li>Expressions <script type="math/tex">E = C^*</script></li>
+      <li>Lexicon <strong>Lexicon</strong> <script type="math/tex">\subseteq \Sigma^* \times \{::\} \times F^*</script>, a finite set of 1-node trees</li>
+      <li>Structure building operations:
+        <ul>
           <li>
-            <p><strong>merge</strong>: <script type="math/tex">(E \times E) \to E</script> is the union of the following three functions. For any <script type="math/tex">\cdot \in \{:, ::\}, \gamma \in F*, \delta \in F^+</script> and any chains <script type="math/tex">\alpha_1, \ldots, \alpha_k, \iota_1, \ldots, \iota_l</script> (where <script type="math/tex">0 \leq k, l</script>):</p>
+            <p><strong>merge</strong>: <script type="math/tex">(E \times E) \to E</script> is the union of the following three functions. For any <script type="math/tex">\cdot \in \{:, ::\}, \gamma \in F^*, \delta \in F^+</script> and any chains <script type="math/tex">\alpha_1, \ldots, \alpha_k, \iota_1, \ldots, \iota_l</script> (where <script type="math/tex">0 \leq k, l</script>):</p>
 
             <p><img src="images/stabler13-chps9-10/merge123.png" height="150" /></p>
           </li>
           <li>
-            <p><strong>move</strong>: <script type="math/tex">E \to E</script> is the union of the following two functions. For any <script type="math/tex">\gamma \in F*, \delta \in F^+</script>, satisfying the following condition:</p>
+            <p><strong>move</strong>: <script type="math/tex">E \to E</script> is the union of the following two functions. For any <script type="math/tex">\gamma \in F^*, \delta \in F^+</script>, satisfying the following condition:</p>
 
             <p>(SMC) none of the chains <script type="math/tex">\alpha_1, \ldots, \alpha_{i-1}, \alpha_{i+1}, \ldots, \alpha_k</script> has <script type="math/tex">-f</script> as its first feature.</p>
 

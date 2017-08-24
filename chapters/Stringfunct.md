@@ -1,4 +1,3 @@
-
 ---
 layout: chapter
 title: Notes on string functions for minimalist parser
